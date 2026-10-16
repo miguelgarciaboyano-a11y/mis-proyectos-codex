@@ -81,3 +81,7 @@ Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias tot
 ## Matriz de manejo y presentación · 17/10/2026
 
 34 pruebas de Otalgia, 104 totales. Gravedad ≥2 años: 7 días; recurrencia: 7–10 salvo criterio independiente de 10; gravedad <2 años no cambia por sí sola a combinación. Amoxicilina último mes, observación 48 h, unión negativa con «ni», otorrea aislada confirmada sin hallazgos de OE, tubos con un envase tópico y OE con edema importante/Cetraxal Plus multidosis. Chromium valida cabecera, campos, ramas terapéuticas y recorridos de interfaz. No es validación clínica ni de ficha técnica.
+
+## Página independiente de Otitis · 17/10/2026
+
+Nueva prueba de navegador: acceso directo a otitis.html, un único apartado sin enlaces ni carga de módulos de TDAH/Fiebre, generación y copia con las mismas dosis, reinicio, ausencia de errores, accesibilidad y tres anchos. Verifica además que la navegación completa de la página principal se conserva. Sintaxis de 16 módulos; sin cambios en reglas clínicas.

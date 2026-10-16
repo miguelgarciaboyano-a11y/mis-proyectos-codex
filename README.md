@@ -116,3 +116,7 @@ La nota final sintetiza únicamente lo escrito o seleccionado, sin cerrar el dia
 Tercera página con anamnesis compacta, exploración independiente de cada oído, generación directa de diagnóstico y tratamiento en la nota. Amoxicilina 50 mg/mL y combinación 100 mg/mL; la observación previa sin mejoría cuenta para no reiniciar 48 horas. Véanse alcance, excepciones y validación técnica en [OTALGIA.md](docs/OTALGIA.md).
 
 La nota de Otalgia sigue el formato breve específico solicitado: relato de consulta sin edad/peso, exploración, juicio clínico y plan; omite apartados vacíos y analgesia. Presentaciones: amoxicilina 250 mg/5 mL y amoxicilina-clavulánico 100/12,5 mg/mL.
+
+## Página independiente de Otitis
+
+[otitis.html](otitis.html) abre solo el formulario de Otitis, sin navegación a TDAH ni Fiebre. Comparte las mismas reglas y componentes clínicos; no contiene una copia divergente. No traslada datos de consultas de la página principal. Enlace para compartir: https://miguelgarciaboyano-a11y.github.io/mis-proyectos-codex/otitis.html
