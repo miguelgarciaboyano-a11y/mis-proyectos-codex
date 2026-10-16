@@ -69,3 +69,7 @@ Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias tot
 ## Redacción clínica de Otalgia · 16/10/2026
 
 20 pruebas específicas y 90 unitarias totales. Añadidas comprobaciones de relato clínico sin edad/peso, sin apartados vacíos, sin historial de analgesia en la salida, con persistencia de su efecto sobre la decisión y con las presentaciones 250 mg/5 mL y 100/12,5 mg/mL. La prueba de navegador verifica generación, actualización, copia y edición del nuevo formato.
+
+## Antecedentes y antibiótico previo · 16/10/2026
+
+25 pruebas de Otalgia y 95 unitarias totales. Casos nuevos: una única entrada de repetición en antecedentes; claves retiradas; selección estructurada del antibiótico para el rescate; dosis por kg y máximos; inmunodepresión unificada que evita pautas estándar incluso con fracaso; exposición reciente sin cambio automático. Chromium comprueba selección y cambios de pauta, campos retirados, cifras de recurrencia y dosis por kg, además de edición, copia, navegación, accesibilidad y cuatro anchos.
