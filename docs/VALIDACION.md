@@ -73,3 +73,7 @@ Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias tot
 ## Antecedentes y antibiótico previo · 16/10/2026
 
 25 pruebas de Otalgia y 95 unitarias totales. Casos nuevos: una única entrada de repetición en antecedentes; claves retiradas; selección estructurada del antibiótico para el rescate; dosis por kg y máximos; inmunodepresión unificada que evita pautas estándar incluso con fracaso; exposición reciente sin cambio automático. Chromium comprueba selección y cambios de pauta, campos retirados, cifras de recurrencia y dosis por kg, además de edición, copia, navegación, accesibilidad y cuatro anchos.
+
+## Recurrencia, duraciones, inmunosupresión y salida · 16/10/2026
+
+29 pruebas de Otalgia, 99 totales. Nuevos casos: recurrencia marcada sin cifras → combinación inmediata y 10 días; menor intervalo de 5–7 días → 5; inmunosupresión no grave vs grave/desconocida; negativos de síntomas según edad; CAE en mayúscula; pauta ótica sin marcas ni instrucciones retiradas; mg por toma junto al volumen. La prueba de navegador verifica los mismos cambios y los recorridos previos de edición, copia, cambio de página, accesibilidad y móvil.
