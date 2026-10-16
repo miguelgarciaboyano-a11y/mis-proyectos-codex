@@ -32,7 +32,7 @@ Cada tarea de nube está aislada: trabajar en este checkout, sin crear worktrees
 
 ## Privacidad
 
-Todo el procesamiento clínico se hace en el navegador, sin IA externa ni APIs externas, analítica, telemetría, cookies, localStorage, sessionStorage ni base de datos. El servidor solo entrega archivos estáticos. La política CSP limita las conexiones al propio alojamiento para cargar el motor OCR local; no hay envío de imágenes ni texto clínico por HTTP.
+Todo el procesamiento clínico se hace en el navegador, sin IA externa ni APIs externas, analítica, telemetría, cookies, localStorage, sessionStorage ni base de datos. El servidor solo entrega archivos estáticos. La política CSP bloquea las conexiones externas; no hay envío de información clínica por HTTP.
 
 Los datos viven en memoria de la pestaña. «Reiniciar» limpia la consulta, la nota y cualquier archivo importado pendiente; cerrar o recargar pierde la consulta. Un navegador puede conservar pestañas suspendidas/restauradas: reiniciar al terminar y usar un equipo controlado.
 
@@ -120,7 +120,3 @@ La nota de Otalgia sigue el formato breve específico solicitado: relato de cons
 ## Página independiente de Otitis
 
 [otitis.html](otitis.html) abre solo el formulario de Otitis, sin navegación a TDAH ni Fiebre. Comparte las mismas reglas y componentes clínicos; no contiene una copia divergente. No traslada datos de consultas de la página principal. Enlace para compartir: https://miguelgarciaboyano-a11y.github.io/mis-proyectos-codex/otitis.html
-
-## Cartilla vacunal
-
-Cuarto apartado con lectura de texto y fotos (OCR local), transcripción revisable y edad por administración a partir de nacimiento y consulta. **La comparación de vacunas pendientes de AEP/Madrid está pendiente de incorporar fuentes oficiales vigentes; no se generan recomendaciones clínicas.** Véanse límites, bloqueo de fuentes y pruebas en [CARTILLA_VACUNAL.md](docs/CARTILLA_VACUNAL.md). Motor OCR, licencias e integridades: [vendor/ocr](vendor/ocr/README.md).

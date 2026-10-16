@@ -14,5 +14,3 @@ No hay despliegue automático configurado desde `main`: las futuras versiones de
 Los puntos de entrada de HTML, CSS y los módulos de navegación llevan versión en la URL para evitar reutilizar menús anteriores desde la caché del navegador. Actualizar ese identificador al modificar estas pantallas. La presencia del commit en `gh-pages` no confirma que el despliegue de Pages haya finalizado: comprobar la ejecución de `pages build and deployment` en Actions cuando se tenga acceso.
 
 La página independiente se publica en `/mis-proyectos-codex/otitis.html`. Incluir **otitis.html** en el árbol de `gh-pages` en cada actualización, además de index.html, src, docs, vendor y .nojekyll. La entrada `src/otitis-only.js` reutiliza el formulario de Otalgia en modo independiente, sin cargar TDAH ni Fiebre.
-
-Cartilla vacunal utiliza assets de `vendor/ocr/` (aprox. 14 MB) y la CSP de index.html permite WebAssembly, Worker del mismo origen y descarga de esos archivos estáticos. Publicar todos los archivos OCR y sus licencias; sin CDN ni secretos. La comparación clínica AEP/Madrid queda desactivada mientras falten fuentes contrastadas.
