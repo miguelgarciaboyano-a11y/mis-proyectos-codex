@@ -113,4 +113,4 @@ La nota final sintetiza únicamente lo escrito o seleccionado, sin cerrar el dia
 
 ## Otalgia
 
-Tercera página con anamnesis compacta, exploración independiente de cada oído, orientación y opciones terapéuticas revisables. Las propuestas solo se incorporan mediante selección expresa. Véanse alcance, excepciones y validación técnica en [OTALGIA.md](docs/OTALGIA.md).
+Tercera página con anamnesis compacta, exploración independiente de cada oído, generación directa de diagnóstico y tratamiento en la nota. Amoxicilina 50 mg/mL y combinación 100 mg/mL; la observación previa sin mejoría cuenta para no reiniciar 48 horas. Véanse alcance, excepciones y validación técnica en [OTALGIA.md](docs/OTALGIA.md).
