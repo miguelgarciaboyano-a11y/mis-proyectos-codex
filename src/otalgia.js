@@ -108,14 +108,17 @@ export function otalgiaSummary(s){
  const p=otalgiaProposal(s),age=ageMonths(s),items=[];let quarantined=false;
  const add=(section,text,priority=80)=>{if(!text)return;const clean=clinicalText(text);quarantined||=clean.quarantined;if(clean.text)items.push({section,text:sentence(clean.text),priority,index:items.length});};
  const location={right:'derecha',left:'izquierda',bilateral:'bilateral'}[s.side];
- add('history',`Consulta por ${s.pain==='no'?'molestias óticas':'otalgia'}${location?' '+location:''}${positive(s.days)?' de '+durationText(s.days)+' de evolución':''}`,130);
+
  const symptoms=[];
  if(s.signs.fever)symptoms.push(`fiebre${s.feverDays?' de '+durationText(s.feverDays)+' de evolución':''}${s.temperature?' (temperatura máxima de '+s.temperature+' °C)':''}`);
  if(s.signs.cold)symptoms.push('síntomas catarrales'+(s.coldDays?' de '+durationText(s.coldDays)+' de evolución':''));
  const hasOtorrhea=s.signs.discharge||['right','left'].some(k=>s[k].status&&s[k].status!=='normal'&&s[k].discharge);
  if(hasOtorrhea)symptoms.push('otorrea');
  if(age!==null&&age<24){for(const [k,text] of [['irritable','irritabilidad'],['feeding','rechazo de tomas'],['sleep','sueño interrumpido'],['head','autogolpes sobre el cráneo']])if(s.signs[k])symptoms.push(text);}
- if(symptoms.length)add('history','Asocia '+joinClinical(symptoms),110);
+ if(s.pain==='si'){
+  add('history',`Consulta por otalgia${location?' '+location:''}${positive(s.days)?' de '+durationText(s.days)+' de evolución':''}`,130);
+  if(symptoms.length)add('history','Asocia '+joinClinical(symptoms),110);
+ }else if(symptoms.length)add('history','Consulta por '+joinClinical(symptoms),130);
  const absent=[['fever','fiebre'],['cold','síntomas catarrales'],['discharge','otorrea'],...(age!==null&&age<24?[['irritable','irritabilidad'],['feeding','rechazo de tomas'],['sleep','sueño interrumpido'],['head','autogolpes sobre el cráneo']]:[])].filter(([k])=>k==='discharge'?!hasOtorrhea:!s.signs[k]).map(([,label])=>label);
  if(absent.length)add('history','No presenta '+joinNegative(absent),108);
  if(s.signs.pool)add('history','Acude a piscina',65);
@@ -128,7 +131,7 @@ export function otalgiaSummary(s){
  const diagnoses=p.evidence.filter(e=>clinicalLabels[e.kind]);
  if(diagnoses.length===2&&diagnoses[0].kind===diagnoses[1].kind)add('assessment',clinicalLabels[diagnoses[0].kind]+' bilateral',155);
  else diagnoses.forEach(e=>add('assessment',clinicalLabels[e.kind]+' '+sideLabel(e),155));
- if(!diagnoses.length)add('assessment','Otalgia de etiología no establecida',100);
+ if(!diagnoses.length&&s.pain==='si')add('assessment','Otalgia de etiología no establecida',100);
  for(let text of p.plan){
   // El tiempo previo afecta a la decisión terapéutica, pero no añade relato ni analgesia a la nota.
   if(/^(Analgesia oral|Sin mejoría tras ≥48 h con analgesia|Observación con analgesia)/u.test(text))continue;

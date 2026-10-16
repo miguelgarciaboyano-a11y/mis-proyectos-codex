@@ -92,3 +92,6 @@ Nueva prueba de navegador: acceso directo a otitis.html, un único apartado sin 
 
 ### Recorte local de cartillas
 118 pruebas unitarias superadas. Navegador: recorte inválido, previsualización de región con contraste, restablecimiento, OCR real con texto impreso sintético, cancelación, privacidad sin envíos, accesibilidad y cuatro anchos superados. No se ha medido exactitud sobre los manuscritos aportados: estos controles ayudan a la revisión manual y no sustituyen un lector de manuscritos.
+
+### Retirada de cartilla y motivo de Otalgia
+Se retira el módulo vacunal y su OCR. La nota solo abre con otalgia cuando «Otalgia referida» es sí; en otro caso utiliza los síntomas presentes y no inventa molestias óticas. Sin síntomas no se fabrica un motivo. 105 pruebas unitarias y los cinco recorridos de navegador superados; comprobación adicional de fiebre sin dolor referido y ausencia de enlace vacunal superada.
