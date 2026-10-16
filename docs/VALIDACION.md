@@ -65,3 +65,7 @@ Añadidas 12 pruebas unitarias (82 en total) y una prueba Chromium de la tercera
 ## Revisión de Otalgia con capítulo 130 · 16/10/2026
 
 Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias totales. Nuevos casos: formulaciones 50/100 mg/mL, máximo 3 g/día, redondeo, criterios de probable/confirmada, recurrencia con episodio reciente, 48 horas previas cumplidas, generación directa y alergia positiva opcional. El recorrido de Otalgia comprueba la retirada de los campos y pasos solicitados, cálculo actualizado y límites. Véase OTALGIA.md para diferencias respecto de la primera versión.
+
+## Redacción clínica de Otalgia · 16/10/2026
+
+20 pruebas específicas y 90 unitarias totales. Añadidas comprobaciones de relato clínico sin edad/peso, sin apartados vacíos, sin historial de analgesia en la salida, con persistencia de su efecto sobre la decisión y con las presentaciones 250 mg/5 mL y 100/12,5 mg/mL. La prueba de navegador verifica generación, actualización, copia y edición del nuevo formato.

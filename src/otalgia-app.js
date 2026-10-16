@@ -1,4 +1,4 @@
-import {newOtalgia,OTALGIA_SIGNS,INFANT_SIGNS,EAR_SIGNS,RISKS,ageMonths,otalgiaSummary} from './otalgia.js?v=20261016-otalgia-3';
+import {newOtalgia,OTALGIA_SIGNS,INFANT_SIGNS,EAR_SIGNS,RISKS,ageMonths,otalgiaSummary} from './otalgia.js?v=20261016-otalgia-4';
 import {wordCount,NOTE_LIMIT} from './note-summary.js';
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function createOtalgiaUI(root){
@@ -19,7 +19,7 @@ export function createOtalgiaUI(root){
  if(['red','bulging'].includes(keys[1])&&e.target.checked){const other=keys[1]==='red'?'bulging':'red';o[other]=false;root.querySelector(`[data-otalgia-path="${keys[0]}.${other}"]`).checked=false;}
  update();if(note)status('Datos modificados · actualiza y revisa la nota.');});
  root.addEventListener('click',async e=>{if(root.dataset.module!=='otalgia')return;const a=e.target.closest('[data-otalgia-action]')?.dataset.otalgiaAction;if(!a)return;
- if(a==='generate'){if(dirty&&!confirm('¿Reemplazar las ediciones manuales de la nota?'))return;const r=otalgiaSummary(s);note=r.text;dirty=false;root.querySelector('#otalgia-note').value=note;count();status(r.omitted.length?'Hay datos no incluidos por extensión: revisa el registro completo.':r.proposal.warnings.length?'Nota generada · revisa la información pendiente.':'Nota generada con diagnóstico y tratamiento · revisar.');}
+ if(a==='generate'){if(dirty&&!confirm('¿Reemplazar las ediciones manuales de la nota?'))return;const r=otalgiaSummary(s);note=r.text;dirty=false;root.querySelector('#otalgia-note').value=note;count();status(r.omitted.length?'Hay datos no incluidos por extensión: revisa el registro completo.':r.proposal.warnings.length?'Nota generada · '+r.proposal.warnings.join(' '):'Nota generada con diagnóstico y tratamiento · revisar.');}
  if(a==='copy'){if(!note||wordCount(note)>NOTE_LIMIT){status('Genera una nota de hasta 180 palabras.');return;}try{await navigator.clipboard.writeText(note);status('Nota copiada.');}catch{root.querySelector('#otalgia-note').select();status('Texto seleccionado: pulsa ⌘C o Ctrl+C.');}}
  if(a==='reset'&&confirm('¿Borrar solo los datos y la nota de Otalgia?')){s=newOtalgia();note='';dirty=false;baseline=JSON.stringify(s);render();}
  });

@@ -114,3 +114,5 @@ La nota final sintetiza únicamente lo escrito o seleccionado, sin cerrar el dia
 ## Otalgia
 
 Tercera página con anamnesis compacta, exploración independiente de cada oído, generación directa de diagnóstico y tratamiento en la nota. Amoxicilina 50 mg/mL y combinación 100 mg/mL; la observación previa sin mejoría cuenta para no reiniciar 48 horas. Véanse alcance, excepciones y validación técnica en [OTALGIA.md](docs/OTALGIA.md).
+
+La nota de Otalgia sigue el formato breve específico solicitado: relato de consulta sin edad/peso, exploración, juicio clínico y plan; omite apartados vacíos y analgesia. Presentaciones: amoxicilina 250 mg/5 mL y amoxicilina-clavulánico 100/12,5 mg/mL.
