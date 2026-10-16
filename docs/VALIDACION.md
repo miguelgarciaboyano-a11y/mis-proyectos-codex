@@ -7,7 +7,7 @@ Fecha: 2026-10-16. Entorno: Node 24.19.0, npm 11.9.0, Python 3.12.14, Chromium d
 | Comprobación | Resultado |
 |---|---|
 | `npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/consulta-npm-cache` | Instalación reproducida desde lockfile, 4 paquetes de desarrollo |
-| `npm run check` | Sintaxis correcta de los 11 módulos JavaScript |
+| `npm run check` | Sintaxis correcta de los 13 módulos JavaScript |
 | `npm test` | **60 pruebas aprobadas**, 0 fallidas, 0 omitidas |
 | `npm start` y petición HTTP local | Servidor estático iniciado, HTTP 200 y aplicación cargada en Chromium |
 | `npm run test:browser` | Recorrido integral completado; sin errores JavaScript ni solicitudes externas |
@@ -47,3 +47,13 @@ Pruebas de síntesis: ocho apartados fijos, ausencia de normalidad/negativos/con
 Chromium: recorridos TDAH y Fiebre, generación de síntesis con ocho apartados y ≤180 palabras, datos explícitos y ausencia de plantillas normales, consejos solo tras incorporación expresa, contador y bloqueo de copia con edición manual >180 palabras, cancelación de regeneración sin perder ediciones, traslado entre pestañas sin mezclar consultas, portapapeles, reinicio, avisos de omisión y datos íntegros en el formulario. Sin errores JavaScript. Axe no detectó infracciones WCAG 2 A/AA y 2.1 AA. Se comprobó el bloque compacto de diez síntomas a 1440, 1024, 768 y 390 px de ancho por 900 px de alto.
 
 Datos de prueba ficticios. La síntesis es extractiva y no demuestra comprensión clínica libre ni anonimización general. Pendientes revisión profesional, otros navegadores y auditoría manual de accesibilidad. La nueva política sustituye la antigua inferencia de exploración normal y los consejos automáticos de Fiebre.
+
+## Primera consulta TDAH: versión vigente
+
+`node --test --test-isolation=none tests/*.test.js`: **70 pruebas aprobadas**, 0 fallidas y 0 omitidas; 10 específicas de la primera consulta. `npm run check`: sintaxis correcta de 13 módulos. Las comprobaciones previas de orientación terapéutica, crecimiento y Fiebre siguen ejecutándose.
+
+Se verifica que hay 12 bloques y 36 casillas, que marcar todas no cambia los hechos de la nota, que hogar/colegio/otras actividades permanecen diferenciados, y que hallazgos/comprobaciones/valoración/plan solo entran desde datos expresos. Se comprueban prioridad y discrepancias seleccionadas, edad 6–13 sin bloqueo fuera de rango, solicitud escolar de seis líneas, síntesis limitada a 180 palabras con aviso de omisiones y ausencia de contaminación implícita del seguimiento.
+
+El nuevo recorrido Chromium comprueba la interfaz completa, casillas sin inferencias, registro parcial, copiado real de nota y solicitud escolar (sin envío), objetivos/cuestionarios/constantes compartidos, edición manual preservada, cancelación de regeneración, cambios de recorrido y de apartado sin perder respuestas, exportación completa y reinicio. Axe no detectó infracciones de los criterios automatizados WCAG 2 A/AA y 2.1 AA; navegación por teclado y cuatro anchos (1440/1024/768/390 px) sin desbordamiento horizontal. Sin errores JavaScript ni solicitudes externas. Captura local `test-results/first-visit.png`, ignorada por Git.
+
+Datos ficticios. Esta evidencia técnica no valida diagnóstico, triaje, protocolos locales, indicación de pruebas/tratamientos/derivación ni una duración real de 15–20 minutos.

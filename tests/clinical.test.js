@@ -14,12 +14,12 @@ const complete=()=>{
  s.ramReviewed=true;s.constantsReview='compatible';for(const [k] of cvFields)s.cv[k]='no';return s;
 };
 test('consulta incompleta no inventa hallazgos ni negaciones',()=>{
- const s=newState();s.interview.reason='Distracción referida';const n=generateNote(s);
+ const s=newState();s.mode='follow';s.interview.reason='Distracción referida';const n=generateNote(s);
  assert.match(n,/Distracción referida/);assert.doesNotMatch(n,/diagnóstico de TDAH|exploración normal|cardiopatía.*no|sin reacciones adversas/i);
  assert.doesNotMatch(n,/IMC|cuestionario.*negativo/i);
 });
 test('frecuencia cero explícita se conserva; vacío no se convierte en cero',()=>{
- const s=newState();s.symptoms.attention='0';const n=generateNote(s);assert.match(n,/nunca\/casi nunca/);assert.doesNotMatch(n,/Seguir instrucciones/);
+ const s=newState();s.mode='follow';s.symptoms.attention='0';const n=generateNote(s);assert.match(n,/nunca\/casi nunca/);assert.doesNotMatch(n,/Seguir instrucciones/);
 });
 test('RAM iniciales no generan negativas confirmadas',()=>{
  const s=newState();assert.match(ramText(s),/no revisadas/);assert.doesNotMatch(ramText(s),/no, confirmado/);

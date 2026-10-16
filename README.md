@@ -19,8 +19,8 @@ Cada tarea de nube está aislada: trabajar en este checkout, sin crear worktrees
 
 ## Funciones implementadas
 
-- Dos recorridos con secciones plegables, navegación por teclado, etiquetas de controles y diseño adaptable a ordenador, tableta y móvil.
-- Anamnesis integrada de los dos guiones: patrón, síntomas, impacto, antecedentes, intervenciones, información escolar, cribado diferencial y cardiovascular. Vacío/no valorado, desconocido, sí y no permanecen diferenciados.
+- Primera consulta por posible TDAH (6–13 años): checklist de 12 bloques y 36 preguntas neutrales, fuentes familiares/escolares/clínicas y solicitud escolar editable de seis líneas. Consulta sucesiva con tratamiento en un recorrido separado. Secciones plegables, teclado y diseño adaptable.
+- En primera consulta las casillas indican preguntas abordadas, nunca síntomas, resultados ni diagnósticos. Se registran funcionamiento en hogar/colegio/otras actividades, desarrollo, aprendizaje/lenguaje, sueño, hábitos, visión/audición, salud emocional, familia, medicación y antecedentes. El contraste clínico distingue explicaciones alternativas, prioridad e información pendiente. En seguimiento permanecen los campos y estados de revisión de tratamiento.
 - Objetivos añadibles/editables con basal, criterio de mejoría, entorno y evolución.
 - Hasta **2 familiares y 2 docentes**, NICHQ Vanderbilt con versión exacta y subescalas distintas. Se introducen puntuaciones **ya calculadas**, con avisos por límites de entrada. No puntúa ítems ni clasifica cuestionarios; ausencia/incompletitud no se convierte en negativo.
 - Mediciones fechadas, unidades explícitas, IMC, advertencias de plausibilidad y comparación con mediciones importadas. Percentiles de peso/talla/IMC **OMS 2006 y 2007**, tablas oficiales locales, límites y método documentados en [PERCENTILES.md](docs/PERCENTILES.md). No hay percentiles de TA ni FC.
@@ -62,7 +62,7 @@ Resultados ejecutados y alcance: [VALIDACION.md](docs/VALIDACION.md).
 
 ## Organización
 
-- `src/schema.js`: campos y estructura del estado; añadir nuevas patologías requiere su propio esquema y reglas.
+- `src/schema.js`: estado compartido; `src/first-visit.js` / `first-visit-app.js`: contenido, síntesis e interfaz de la primera consulta. Añadir patologías requiere su propio esquema y reglas.
 - `src/app.js` / `style.css`: interfaz, navegación, nota editable, acciones locales.
 - `src/clinical.js`: orientación y propuestas trazables; `src/note-summary.js`: síntesis final de ocho apartados y límite de palabras.
 - `src/questionnaires.js`: versiones y límites de puntuaciones introducidas. Sin puntuación por ítems ni clasificación.
@@ -100,3 +100,13 @@ Un único cuadro recoge la exploración efectivamente realizada. **Vacío → «
 Los consejos orientativos siguen visibles, pero no pasan automáticamente a la nota. Pueden escribirse los consejos realmente explicados o incorporarse expresamente el texto propuesto al registro. Los avisos por edad y persistencia ayudan a revisar el caso y no se convierten en decisiones clínicas documentadas sin indicación del profesional.
 
 Ambas consultas y notas se conservan por separado en memoria al navegar. Reiniciar fiebre borra solo esa consulta. Recargar o cerrar pierde los datos. `src/fever.js` prepara los datos de síntesis y `src/fever-app.js` presenta la interfaz. Pruebas: `tests/fever.test.js`, `tests/note-summary.test.js` y los recorridos Chromium. Para ver las pruebas individuales en este entorno: `node --test --test-isolation=none tests/*.test.js` (Node 22+).
+
+## Primera consulta por posible TDAH
+
+El recorrido inicial se ha rediseñado por completo para una recogida de información de 15–20 minutos en niños de 6–13 años. [Checklist completa y solicitud escolar](docs/PRIMERA_CONSULTA.md). Los doce bloques respetan el orden solicitado; cada uno distingue sus fuentes y permite registrar datos o dejar información pendiente. La perspectiva del menor, las fortalezas y las necesidades funcionales forman parte de la entrevista.
+
+Las 36 casillas marcan únicamente qué se ha abordado. No generan hallazgos clínicos, puntuaciones diagnósticas ni negativas en la nota. La prioridad es una valoración explícita del profesional; no se asigna automáticamente. Pruebas, tratamientos y derivaciones son aspectos a contrastar con protocolos locales antes de decidir.
+
+La solicitud escolar contiene seis líneas editables y se copia al portapapeles; no se envía al centro. La autorización familiar no se da por supuesta. Los anexos opcionales de Vanderbilt, constantes y objetivos se conservan en los bloques 4, 9 y 12. La consulta sucesiva y Fiebre mantienen sus recorridos.
+
+La nota final sintetiza únicamente lo escrito o seleccionado, sin cerrar el diagnóstico y conservando el formato de ocho apartados y máximo de 180 palabras. Los datos de la primera consulta se conservan al cambiar de recorrido o apartado; no se incorporan como nuevos hechos al seguimiento de forma implícita. No se validó la duración real de la entrevista ni el uso clínico.

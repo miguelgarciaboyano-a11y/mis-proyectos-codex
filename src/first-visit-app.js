@@ -1,0 +1,59 @@
+import {FIRST_BLOCKS,firstVisitWarnings} from './first-visit.js';
+import {wordCount,NOTE_LIMIT} from './note-summary.js';
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function createFirstVisitUI(root,{getState,getNote,isNoteDirty,extras,onEdit}){
+ const at=path=>path.split('.').reduce((o,k)=>o?.[k],getState().firstVisit);
+ const field=(path,label,type='textarea',options=null)=>{
+  const id='first-'+path.replaceAll('.','-'),v=at(path)??'';
+  const input=options?`<select id="${id}" data-first-path="${path}">${options.map(([key,text])=>`<option value="${key}" ${v===key?'selected':''}>${text}</option>`).join('')}</select>`:type==='textarea'?`<textarea id="${id}" data-first-path="${path}" maxlength="10000" rows="2">${esc(v)}</textarea>`:`<input id="${id}" data-first-path="${path}" value="${esc(v)}" type="${type}" ${type==='number'?'min="0" step="any" inputmode="decimal"':'maxlength="10000"'}>`;
+  return `<div class="field"><label for="${id}">${label}</label>${input}</div>`;
+ };
+ function block(b,i){
+  return `<details class="section first-block" id="first-block-${b.id}" ${i===0||i===11?'open':''}><summary><span class="section-num">${String(i+1).padStart(2,'0')}</span><span><strong>${b.title}</strong><small>${b.source} · orientación ${b.time}</small></span><span class="chevron" aria-hidden="true">⌄</span></summary><div class="section-body"><p class="first-source">APORTA: ${b.source}</p><div class="first-checklist">${b.checks.map(([id,text])=>`<label class="first-check"><input type="checkbox" data-first-path="checks.${b.id}_${id}" ${at('checks.'+b.id+'_'+id)?'checked':''}><span>${text}</span></label>`).join('')}</div><div class="first-answers">${b.fields.map(([id,label])=>field('responses.'+id,label)).join('')}</div>
+  ${b.id==='school'?field('schoolStatus','Estado de la información escolar','select',[['','No indicado'],['pending','Pendiente de recibir'],['received','Información recibida'],['discordant','Hay diferencias entre relatos que deben contrastarse']])+extras.questionnaires():''}
+  ${b.id==='exam'?`<p class="hint">Las casillas no acreditan hallazgos. Registra solo lo explorado o comprobado. No se completa una exploración normal si el campo queda vacío.</p>${extras.measurements()}`:''}
+  ${b.id==='alternatives'?'<p class="reference-note">Aspectos a contrastar: dificultades específicas de aprendizaje o lenguaje; perfil cognitivo y otras necesidades del neurodesarrollo, incluida la comunicación social/posible TEA; ansiedad, ánimo o estrés; regulación y conducta; trastornos del sueño; visión/audición; salud general, efectos de medicación y factores familiares/escolares. Pueden coexistir o explicar parte del cuadro: no son diagnósticos confirmados ni indicaciones automáticas de pruebas.</p>':''}
+  ${b.id==='priority'?field('priorityStatus','Valoración de prioridad expresamente realizada por el pediatra','select',[['','No valorada / pendiente'],['notIdentified','No identifico señales de prioridad en lo valorado'],['concern','Existe preocupación: describir y valorar prioridad']])+'<p class="hint">Ante riesgo inmediato, prima la valoración y actuación clínica; no es necesario completar el formulario. El sistema no asigna urgencia ni deriva automáticamente.</p>':''}
+  ${b.id==='plan'?`<p class="hint">Las pruebas, intervenciones o derivaciones son opciones a contrastar con protocolos locales y las necesidades de este caso. Solo tu plan escrito se incorpora a la nota.</p>${extras.goals()}`:''}
+  </div></details>`;
+ }
+ function render(){
+  const s=getState(),note=getNote();
+  root.innerHTML=`<aside class="sidebar"><a class="brand" href="#workspace"><span class="brand-icon" aria-hidden="true">✚</span><span>consulta<small>PEDIATRÍA</small></span></a><p class="nav-label">ESPACIO CLÍNICO</p><a class="side-link active" aria-current="page" data-module="tdah" href="#workspace">◉ TDAH <span class="small-badge">01</span></a><a class="side-link" data-module="fever" href="#workspace">◉ Fiebre <span class="small-badge">02</span></a><div class="sidebar-bottom">Procesamiento local<small>Datos solo en esta pestaña.<br>Sin envío de información clínica.</small><a href="#privacy">Privacidad y límites ↗</a></div></aside>
+  <div class="page"><header class="topbar"><span>Pediatría de Atención Primaria / <strong>Posible TDAH</strong></span><span class="prototype">PRIMERA VALORACIÓN · 6–13 AÑOS</span></header><main class="first-workspace" id="workspace" tabindex="-1"><div class="page-heading"><div><p class="eyebrow">ESCUCHAR · CONTEXTUALIZAR · ACORDAR</p><h1>Primera consulta por posible TDAH</h1><p class="lead">Una entrevista de 15–20 minutos centrada en el funcionamiento y las necesidades.</p></div></div>
+  <div class="toolbar"><div class="mode-switch" role="group" aria-label="Tipo de consulta"><button data-mode="first" aria-pressed="true">01 <span>Primera consulta</span></button><button data-mode="follow" aria-pressed="false">02 <span>Consulta sucesiva</span></button></div><div class="tools"><button class="text-button" data-action="import">Importar consulta previa</button><button class="text-button" data-action="export">Exportar JSON</button><button class="text-button danger" data-action="reset">Reiniciar TDAH</button><input type="file" id="import-file" accept=".json,application/json" hidden></div></div><div id="transfer-panel"></div>
+  <div class="notice"><div><strong>Recoger información antes de decidir los siguientes pasos.</strong> Marca las preguntas abordadas y escribe los datos disponibles. Una casilla no equivale a síntoma presente, resultado negativo ni diagnóstico. Prioriza seguridad, motivo, impacto y varios contextos; el resto puede quedar pendiente.</div></div>
+  <div class="consultation-grid"><div class="form-column"><div class="fields first-meta">${extras.date()}${field('ageYears','Edad en años','number')}${field('origin','Quién comunica la sospecha','select',[['','No indicado'],['family','Familia'],['school','Colegio'],['clinician','Pediatría'],['multiple','Varias fuentes']])}</div><div class="first-progress"><span id="first-progress" role="status" aria-live="polite"></span><div><button class="text-button" data-first-action="expand">Abrir bloques</button><button class="text-button" data-first-action="collapse">Contraer bloques</button></div></div><div id="first-warnings" role="status" aria-live="polite"></div>
+  <nav class="section-nav" aria-label="Bloques de la primera consulta"><a href="#first-block-reason" data-first-jump="reason">Motivo</a><a href="#first-block-home" data-first-jump="home">Casa y colegio</a><a href="#first-block-development" data-first-jump="development">Desarrollo y salud</a><a href="#first-block-priority" data-first-jump="priority">Prioridad</a><a href="#first-block-plan" data-first-jump="plan">Plan</a><a href="#first-school-request" data-first-jump="school-request">Solicitud escolar</a></nav>
+  ${FIRST_BLOCKS.map(block).join('')}
+  <section class="section" id="first-school-request"><div class="section-body"><h2>Solicitud de información al centro escolar</h2><p class="hint">Plantilla de seis líneas, editable y sin identificadores. Comprueba la autorización y el canal acordado con la familia. Copiar no envía ningún mensaje.</p>${field('schoolRequest','Texto para solicitar información al colegio','textarea')}<button class="secondary" data-first-action="copy-school">Copiar solicitud escolar</button><span class="hint" id="first-school-status" role="status" aria-live="polite"></span></div></section>
+  <details class="privacy" id="privacy"><summary>Privacidad y alcance</summary><p>Datos y notas en memoria de esta pestaña, sin almacenamiento persistente ni envío a IA o servicios externos. Exportar descarga un JSON sin cifrar con el registro y la nota; reiniciar no borra esas descargas ni el portapapeles. Cambiar a Fiebre conserva ambos registros. Cerrar o recargar los pierde.</p><p>Guía de recogida de información, no escala validada ni confirmación de TDAH. Las casillas solo indican preguntas abordadas. Se distinguen fuentes familiares, escolares y clínicas. El juicio clínico y los protocolos locales determinan las actuaciones. La síntesis final solo incluye datos escritos o seleccionados explícitamente; máximo 180 palabras, con aviso si algo no cabe.</p><a href="./docs/PRIMERA_CONSULTA.md" target="_blank" rel="noopener">Contenido y límites de la primera consulta ↗</a></details>
+  </div><aside class="note-panel" aria-labelledby="note-heading"><div class="note-header"><span class="eyebrow">DOCUMENTACIÓN</span><span class="pill">MÁX. 180 PALABRAS</span></div><h2 id="note-heading">Nota clínica</h2><p>Motivo, datos de varios contextos, antecedentes, exploración, pruebas, valoración, plan e información pendiente. Solo con información aportada.</p><div class="note-actions"><button class="primary" data-action="generate">Generar / actualizar síntesis</button></div><label class="sr-only" for="clinical-note">Síntesis editable de la primera consulta</label><textarea id="clinical-note" spellcheck="false" placeholder="La síntesis no presupone diagnóstico ni añade hallazgos o decisiones.">${esc(note)}</textarea><p class="hint" id="clinical-note-length">${wordCount(note)}/${NOTE_LIMIT} palabras</p><div class="note-footer"><span id="note-status">${isNoteDirty()?'Ediciones manuales conservadas':note?'Nota conservada · revisar':'Aún sin generar'}</span><button class="secondary" data-action="copy">Copiar texto</button></div><p class="note-tip">Los cambios del formulario no sobrescriben tu nota. Revisa la selección de datos antes de copiarla al historial.</p></aside></div></main></div><div class="toast" id="status" role="status" aria-live="polite"></div>`;
+  update();
+ }
+ function update(){
+  if(!root.querySelector('#first-progress'))return;
+  const v=getState().firstVisit,total=FIRST_BLOCKS.reduce((sum,b)=>sum+b.checks.length,0);
+  root.querySelector('#first-progress').textContent=`${FIRST_BLOCKS.flatMap(b=>b.checks.map(([id])=>b.id+'_'+id)).filter(id=>v.checks[id]===true).length}/${total} preguntas abordadas · no es una puntuación clínica`;
+  root.querySelector('#first-warnings').innerHTML=firstVisitWarnings(v).map(w=>'<p class="reference-note">'+esc(w)+'</p>').join('');
+ }
+ root.addEventListener('input',e=>{
+  if(root.dataset.module!=='tdah'||getState().mode!=='first')return;
+  const path=e.target.dataset.firstPath;if(!path)return;
+  const keys=path.split('.');let o=getState().firstVisit;for(const k of keys.slice(0,-1)){o[k]??={};o=o[k];}o[keys.at(-1)]=e.target.type==='checkbox'?e.target.checked:e.target.value;
+  onEdit();update();
+ });
+ root.addEventListener('click',async e=>{
+  if(root.dataset.module!=='tdah'||getState().mode!=='first')return;
+  const jump=e.target.closest('[data-first-jump]')?.dataset.firstJump;
+  if(jump&&jump!=='school-request'){const block=root.querySelector('#first-block-'+jump);block.open=true;block.querySelector('summary').focus();}
+  const action=e.target.closest('[data-first-action]')?.dataset.firstAction;
+  if(action==='expand'||action==='collapse')root.querySelectorAll('.first-block').forEach(el=>el.open=action==='expand');
+  if(action==='copy-school'){
+   const text=getState().firstVisit.schoolRequest;if(!text.trim()){root.querySelector('#first-school-status').textContent='Escribe la solicitud antes de copiar.';return;}
+   try{await navigator.clipboard.writeText(text);root.querySelector('#first-school-status').textContent='Solicitud copiada. No se ha enviado al centro escolar.';}
+   catch{const el=root.querySelector('#first-schoolRequest');el.focus();el.select();root.querySelector('#first-school-status').textContent='Texto seleccionado: pulsa Ctrl+C o ⌘C.';}
+  }
+ });
+ return {render,update};
+}

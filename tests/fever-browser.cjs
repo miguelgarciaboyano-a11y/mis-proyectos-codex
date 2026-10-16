@@ -10,7 +10,7 @@ const assert=require('node:assert/strict');
  const note=()=>page.locator('#fever-note').inputValue();
  const validate=async()=>{const text=await note();assert.equal(text.split('\n').length,8);assert.ok(text.trim().split(/\s+/).length<=180);return text;};
  try{
- await page.goto('http://127.0.0.1:5173/');await page.locator('[data-path="interview.reason"]').fill('TDAH ficticio conservado');
+ await page.goto('http://127.0.0.1:5173/');await page.locator('[data-first-path="responses.reason"]').fill('TDAH ficticio conservado');
  await page.locator('a[data-module="fever"]').click();assert.equal(await page.locator('[data-fever-path$=".present"]').count(),10);
  assert.equal(await page.locator('input[type="checkbox"]').count(),0);assert.equal(await page.locator('[data-fever-path^="exam"]').count(),1);
  for(const width of [1440,1024,768,390]){
@@ -35,13 +35,13 @@ const assert=require('node:assert/strict');
  await page.locator('#fever-note').fill('palabra '.repeat(181));await action('copy');assert.match(await page.locator('#note-status').innerText(),/supera 180/);assert.match(await page.locator('#fever-note-length').innerText(),/181\/180/);
  await page.locator('#fever-note').fill('Nota manual ficticia');await field('days').fill('3');assert.equal(await note(),'Nota manual ficticia');
  accept=false;await action('generate');assert.equal(await note(),'Nota manual ficticia');accept=true;
- await page.locator('a[data-module="tdah"]').click();assert.equal(await page.locator('[data-path="interview.reason"]').inputValue(),'TDAH ficticio conservado');
+ await page.locator('a[data-module="tdah"]').click();assert.equal(await page.locator('[data-first-path="responses.reason"]').inputValue(),'TDAH ficticio conservado');
  await page.locator('a[data-module="fever"]').click();assert.equal(await note(),'Nota manual ficticia');
  await field('examAlterations').fill('');await action('generate');assert.match(await validate(),/^Exploración: no aportada\.$/m);
  await field('extraHistory').evaluate(el=>el.closest('details').open=true);await field('extraHistory').fill('Registro extenso '.repeat(300));await action('generate');assert.match(await validate(),/Información adicional no incluida por extensión/);assert.equal(await field('extraHistory').inputValue(),'Registro extenso '.repeat(300));
  const a11y=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();assert.deepEqual(a11y.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[]);
  await action('reset');assert.equal(await note(),'');assert.equal(await field('symptoms.cough.present').inputValue(),'');
- await page.locator('a[data-module="tdah"]').click();assert.equal(await page.locator('[data-path="interview.reason"]').inputValue(),'TDAH ficticio conservado');
+ await page.locator('a[data-module="tdah"]').click();assert.equal(await page.locator('[data-first-path="responses.reason"]').inputValue(),'TDAH ficticio conservado');
  assert.deepEqual(errors,[]);assert.equal(await page.evaluate(()=>localStorage.length+sessionStorage.length),0);
  console.log('Síntesis Fiebre: ocho apartados y ≤180 palabras, solo datos aportados, no inferencias normales, fechas/cifras, consejo expreso, límite de copia, edición conservada, avisos de omisión, accesibilidad y diseño compacto: OK.');
  }finally{await browser.close();}

@@ -15,7 +15,7 @@ const fs=require('node:fs/promises');
  const click=async action=>page.locator(`[data-action="${action}"]`).click();
  const note=()=>page.locator('#clinical-note').inputValue();
  try{
- await page.goto('http://127.0.0.1:5173/');await page.locator('#f-interview-reason').waitFor();
+ await page.goto('http://127.0.0.1:5173/');await page.locator('[data-mode="follow"]').click();await page.locator('#f-interview-reason').waitFor();
  const a11y=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
  await fs.writeFile('test-results/accessibility.json',JSON.stringify(a11y.violations,null,2));
  assert.deepEqual(a11y.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))})),[]);
@@ -62,7 +62,7 @@ const fs=require('node:fs/promises');
  // Exportación real e importación controlada, sin evolución ni RAM previas.
  const downloadPromise=page.waitForEvent('download');await click('export');const download=await downloadPromise;
  const exported=JSON.parse(await fs.readFile(await download.path(),'utf8'));assert.equal(exported.app,'consulta-pediatrica-local');assert.equal(exported.consultation.goals[0].baseline,'90 min');
- await click('reset');assert.equal(await note(),'');await page.locator('#import-file').setInputFiles({name:'ficticio.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
+ await click('reset');assert.equal(await note(),'');await page.locator('[data-mode="follow"]').click();await page.locator('#import-file').setInputFiles({name:'ficticio.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});
  await click('apply-transfer');assert.match(await page.locator('#status').innerText(),/Selecciona/);
  await page.locator('#same-case').check();await page.locator('#transfer-goals').check();await page.locator('#transfer-drug').check();await page.locator('#transfer-measurements').check();await click('apply-transfer');
  assert.equal(await page.locator('[data-path="goals.0.baseline"]').inputValue(),'90 min');assert.equal(await page.locator('[data-path="goals.0.current"]').inputValue(),'');
