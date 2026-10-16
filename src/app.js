@@ -1,3 +1,4 @@
+import {createFeverUI} from './fever-app.js';
 import {newState,STATES,symptoms,differentials,cvFields,adverseEffects,drugFields,interviewGroups,followFields} from './schema.js';
 import {synthesis,therapyProposal,generateNote} from './clinical.js';
 import {bmi,measurementWarnings,measurementText,compareMeasurements,percentileStatus} from './measurements.js';
@@ -7,6 +8,8 @@ import {parseTransfer,applyTransfer} from './transfer.js';
 let state=newState(),note='',noteDirty=false,previous=null;
 let initialSnapshot=JSON.stringify(state),readEpoch=0;
 const root=document.getElementById('app');
+const feverUI=createFeverUI(root);
+let activeModule='tdah';
 const escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const at=path=>path.split('.').reduce((v,k)=>v?.[k],state);
 function set(path,value){const keys=path.split('.');let o=state;for(const k of keys.slice(0,-1))o=o[k];o[keys.at(-1)]=value;}
@@ -22,9 +25,11 @@ function field(path,label,type='text',opts){
 function fields(list,prefix){return list.map(([k,l,t,opts])=>field(prefix+'.'+k,l,t,opts)).join('');}
 function section(id,number,title,subtitle,content,open=false){return `<details class="section" id="${id}" ${open?'open':''}><summary><span class="section-num">${number}</span><span><strong>${title}</strong><small>${subtitle}</small></span><span class="chevron" aria-hidden="true">⌄</span></summary><div class="section-body">${content}</div></details>`;}
 function render(){
+ root.dataset.module=activeModule;
+ if(activeModule==='fever'){feverUI.render();return;}
  root.innerHTML=`
  <aside class="sidebar"><a class="brand" href="#workspace" aria-label="Consulta Pediatría, inicio"><span class="brand-icon" aria-hidden="true">✚</span><span>consulta<small>PEDIATRÍA</small></span></a>
- <p class="nav-label">ESPACIO CLÍNICO</p><a class="side-link active" href="#workspace"><span aria-hidden="true">◉</span> TDAH <span class="small-badge">01</span></a><p class="future">Otras áreas<br><small>Estructura preparada para ampliar</small></p>
+ <p class="nav-label">ESPACIO CLÍNICO</p><a class="side-link active" aria-current="page" data-module="tdah" href="#workspace"><span aria-hidden="true">◉</span> TDAH <span class="small-badge">01</span></a><a class="side-link" href="#workspace" data-module="fever">◉ Fiebre <span class="small-badge">02</span></a>
  <div class="sidebar-bottom"><span class="local-dot"></span> Procesamiento local<small>Sin IA, analítica ni telemetría.<br>Los datos viven en esta pestaña.</small><a href="#privacy">Privacidad y fuentes ↗</a></div></aside>
  <div class="page"><header class="topbar"><span>Pediatría de atención primaria <span class="muted">/</span> <strong>TDAH</strong></span><span class="prototype">PROTOTIPO · REVISIÓN PROFESIONAL</span></header>
  <main id="workspace" tabindex="-1"><div class="page-heading"><div><p class="eyebrow">CUADERNO DE CONSULTA</p><h1>Una consulta, bien recogida.</h1><p class="lead">Anamnesis, objetivos y seguimiento del TDAH en un mismo lugar.</p></div><span class="memory"><span class="local-dot"></span> Solo en esta pestaña</span></div>
@@ -44,7 +49,7 @@ function render(){
  ${section('treatment','11',state.mode==='first'?'Tratamiento · si se inicia':'Tratamiento previo a la consulta','Registro clínico de la pauta; no prescripción automática',`<div class="fields">${fields(drugFields,'drug')}</div><p class="hint">Describe cada toma, unidad y horario. No se asume equivalencia entre formulaciones ni se calcula dosis a partir del peso.</p>`)}
  ${state.mode==='follow'?section('follow','12','Respuesta, cobertura y adherencia','La mejoría se compara con objetivos y situación basal',`<div class="fields">${fields(followFields,'follow')}</div>`,true)+section('tolerance','13','Tolerabilidad','Lista de la guía de metilfenidato · no exhaustiva',`<label class="check emphasis"><input type="checkbox" data-path="ramReviewed" ${state.ramReviewed?'checked':''}> Reacciones adversas revisadas con el paciente / familia</label><p class="hint">Mientras no confirmes la revisión, la nota indicará «no revisadas», aunque los selectores muestren «No». Al modificar una RAM se solicita confirmar de nuevo.</p>${adverseEffects.map(([k,l])=>`<div class="ram-card">${field('ram.'+k+'.present',l,'select',[['false','No'],['true','Sí']])}<div class="ram-details fields" id="ram-${k}" ${state.ram[k].present?'':'hidden'}>${field('ram.'+k+'.intensity','Intensidad')}${field('ram.'+k+'.onset','Momento de aparición')}${field('ram.'+k+'.impact','Repercusión')}${field('ram.'+k+'.notes','Observaciones','textarea')}</div></div>`).join('')}${field('otherRam','Otras reacciones adversas o preocupaciones','textarea')}<p class="source">Fuente: Metilfenidato, p. 2, apartado 4. Lista no exhaustiva; no extrapolar a otros fármacos.</p>`,true):''}
  ${section('assessment','14','Valoración y plan','Orientación separada del texto validado',`<div id="synthesis" class="derived"></div><button class="secondary" data-action="accept-synthesis">Revisar e incorporar síntesis a valoración</button>${field('assessment','Valoración del profesional · editable','textarea')}<div id="proposal"></div>${field('plan','Plan decidido por el profesional','textarea')}${field('followup','Plan de seguimiento: fecha, coordinación y controles','textarea')}`,true)}
- <details class="privacy" id="privacy"><summary>Privacidad, fuentes y límites del prototipo</summary><p>No se guarda nada en localStorage, cookies ni bases de datos. Los datos y la nota permanecen en memoria de esta pestaña hasta reiniciar, cerrar o recargar. El navegador puede conservar una pestaña suspendida o copias del portapapeles: reinicia al terminar.</p><p>Exportar descarga un JSON sin cifrar con datos y nota. Tú eliges dónde guardarlo y debes borrar las copias cuando proceda. «Reiniciar» limpia esta pestaña; no borra archivos exportados, el portapapeles ni copias en la historia clínica.</p><p>Importar solo traslada, con selección explícita, objetivos sin evolución, tratamiento y mediciones como previas. No traslada identidad, negaciones, valoración, revisión de RAM ni decisiones aceptadas. Revisa la pertenencia al mismo caso antes de importar.</p><p>Sin servicios externos, modelos de IA, fuentes remotas, analítica ni telemetría. Servir solo en un equipo de confianza, enlazado a 127.0.0.1. Usar datos ficticios mientras no se haya revisado el prototipo.</p><a href="./docs/FUENTES.md" target="_blank" rel="noopener">Correspondencia y límites de las fuentes ↗</a><p>Solo TDAH implementado. Sin validación clínica, circuitos locales de derivación ni fichas técnicas actualizadas integradas. Datos y métodos OMS: World Health Organization, GPL ≥3; sin garantía. <a href="./vendor/who/LICENSE.md" target="_blank" rel="noopener">Licencia y redistribución</a>; <a href="./vendor/who/manifest.json" target="_blank" rel="noopener">versiones y atribución</a>.</p></details>
+ <details class="privacy" id="privacy"><summary>Privacidad, fuentes y límites del prototipo</summary><p>No se guarda nada en localStorage, cookies ni bases de datos. Los datos y la nota permanecen en memoria de esta pestaña hasta reiniciar, cerrar o recargar. El navegador puede conservar una pestaña suspendida o copias del portapapeles: reinicia al terminar.</p><p>Exportar descarga un JSON sin cifrar con datos y nota. Tú eliges dónde guardarlo y debes borrar las copias cuando proceda. «Reiniciar» limpia esta pestaña; no borra archivos exportados, el portapapeles ni copias en la historia clínica.</p><p>Importar solo traslada, con selección explícita, objetivos sin evolución, tratamiento y mediciones como previas. No traslada identidad, negaciones, valoración, revisión de RAM ni decisiones aceptadas. Revisa la pertenencia al mismo caso antes de importar.</p><p>Sin servicios externos, modelos de IA, fuentes remotas, analítica ni telemetría. Servir solo en un equipo de confianza, enlazado a 127.0.0.1. Usar datos ficticios mientras no se haya revisado el prototipo.</p><a href="./docs/FUENTES.md" target="_blank" rel="noopener">Correspondencia y límites de las fuentes ↗</a><p>TDAH y plantilla de Fiebre implementados. Sin validación clínica, circuitos locales de derivación ni fichas técnicas actualizadas integradas. Datos y métodos OMS: World Health Organization, GPL ≥3; sin garantía. <a href="./vendor/who/LICENSE.md" target="_blank" rel="noopener">Licencia y redistribución</a>; <a href="./vendor/who/manifest.json" target="_blank" rel="noopener">versiones y atribución</a>.</p></details>
  </div><aside class="note-panel" aria-labelledby="note-heading"><div class="note-header"><span class="eyebrow">DOCUMENTACIÓN</span><span class="pill">TEXTO EDITABLE</span></div><h2 id="note-heading">Nota clínica</h2><p>Genera un borrador con lo registrado.<br>Revisa el texto antes de llevarlo a la historia.</p><div class="note-actions"><button class="primary" data-action="generate">Generar / actualizar borrador</button></div><label class="sr-only" for="clinical-note">Borrador editable de la nota clínica</label><textarea id="clinical-note" placeholder="La nota aparecerá aquí cuando generes el borrador. No se añaden datos negativos ni decisiones no registradas." spellcheck="false">${escape(note)}</textarea><div class="note-footer"><span id="note-status">${noteDirty?'Ediciones manuales conservadas':note?'Borrador generado · revisar':'Aún sin generar'}</span><button class="secondary" data-action="copy">Copiar texto</button></div><p class="note-tip">Los cambios en el formulario no sobrescriben la nota. Actualízala expresamente cuando lo necesites.</p></aside></div>
  <footer>CONSULTA · PEDIATRÍA <span>Herramienta local de apoyo · Madrid</span></footer></main></div><div class="toast" id="status" role="status" aria-live="polite"></div>`;
  updateDerived();
@@ -72,6 +77,7 @@ function updateDerived(){
 function toast(message){const el=document.getElementById('status');el.textContent=message;el.classList.add('visible');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('visible'),6500);}
 function noteStatus(message){document.getElementById('note-status').textContent=message;}
 root.addEventListener('input',e=>{
+ if(activeModule!=='tdah')return;
  if(e.target.id==='clinical-note'){note=e.target.value;noteDirty=true;noteStatus('Ediciones manuales conservadas');return;}
  const path=e.target.dataset.path;if(!path)return;
  let value=e.target.type==='checkbox'?e.target.checked:e.target.value;
@@ -87,13 +93,16 @@ root.addEventListener('input',e=>{
  updateDerived();
 });
 root.addEventListener('change',async e=>{
- if(e.target.id!=='import-file')return;
+ if(activeModule!=='tdah'||e.target.id!=='import-file')return;
  const file=e.target.files[0];if(!file)return;const epoch=++readEpoch;
  try{if(file.size>1_000_000)throw Error('Máximo 1 MB.');const raw=await file.text();if(epoch!==readEpoch)return;previous=parseTransfer(raw);showTransfer();toast('Archivo leído localmente. Elige qué trasladar y comprueba el caso.');}
  catch(err){toast('No se ha importado: '+err.message);}
  e.target.value='';
 });
 root.addEventListener('click',async e=>{
+ const module=e.target.closest('a[data-module]')?.dataset.module;
+ if(module){e.preventDefault();activeModule=module;render();root.querySelector('#workspace').focus();return;}
+ if(activeModule!=='tdah')return;
  const mode=e.target.closest('[data-mode]')?.dataset.mode;
  if(mode){state.mode=mode;state.accepted=[];render();if(note)noteStatus('Recorrido cambiado · nota conservada, pendiente de actualizar');toast('Recorrido cambiado. Los datos se conservan; actualiza la nota si ya estaba generada.');return;}
  const b=e.target.closest('[data-action]');if(!b)return;
@@ -146,5 +155,5 @@ root.addEventListener('click',async e=>{
  }
 });
 function showTransfer(){document.getElementById('transfer-panel').innerHTML=`<div class="transfer"><h2>Trasladar desde una consulta previa</h2><p>Fecha indicada en el archivo: ${escape(previous.date||'no consta')}. Comprueba el caso fuera de la aplicación.</p><label class="check"><input id="same-case" type="checkbox"> He comprobado que corresponde al mismo caso</label><label class="check"><input id="transfer-goals" type="checkbox"> Reemplazar objetivos (${previous.goals.length}); sin evolución previa</label><label class="check"><input id="transfer-drug" type="checkbox"> Reemplazar tratamiento; revisión clínica pendiente</label><label class="check"><input id="transfer-measurements" type="checkbox"> Reemplazar mediciones previas (${previous.measurements.length}); no modifica la medición actual</label><details><summary>Revisar contenido antes de trasladar</summary><h3>Objetivos</h3>${list(previous.goals.map(g=>g.description+' · basal: '+g.baseline+' · criterio: '+g.criterion))}<h3>Tratamiento</h3>${list(drugFields.filter(([k])=>previous.drug[k]).map(([k,l])=>l+': '+previous.drug[k]))}<h3>Mediciones previas</h3>${list(previous.measurements.map(measurementText))}</details><div class="button-row"><button class="primary" data-action="apply-transfer">Trasladar selección</button><button class="secondary" data-action="cancel-transfer">Cancelar y descartar archivo</button></div></div>`;document.getElementById('same-case').focus();}
-window.addEventListener('beforeunload',e=>{if(note||JSON.stringify(state)!==initialSnapshot){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(feverUI.hasData()||note||JSON.stringify(state)!==initialSnapshot){e.preventDefault();e.returnValue='';}});
 render();
