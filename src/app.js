@@ -1,7 +1,8 @@
-import {createOtalgiaUI} from './otalgia-app.js?v=20261017-otitis-8';
-import {createFirstVisitUI} from './first-visit-app.js?v=20261017-otitis-8';
+import {createVaccineUI} from './vaccine-app.js?v=20261017-vaccines-9';
+import {createOtalgiaUI} from './otalgia-app.js?v=20261017-vaccines-9';
+import {createFirstVisitUI} from './first-visit-app.js?v=20261017-vaccines-9';
 import {wordCount,NOTE_LIMIT} from './note-summary.js';
-import {createFeverUI} from './fever-app.js?v=20261017-otitis-8';
+import {createFeverUI} from './fever-app.js?v=20261017-vaccines-9';
 import {newState,STATES,symptoms,differentials,cvFields,adverseEffects,drugFields,interviewGroups,followFields} from './schema.js';
 import {synthesis,therapyProposal,generateNote} from './clinical.js';
 import {bmi,measurementWarnings,measurementText,compareMeasurements,percentileStatus} from './measurements.js';
@@ -13,6 +14,7 @@ let initialSnapshot=JSON.stringify(state),readEpoch=0;
 const root=document.getElementById('app');
 const feverUI=createFeverUI(root);
 const otalgiaUI=createOtalgiaUI(root);
+const vaccineUI=createVaccineUI(root);
 let activeModule='tdah';
 const firstUI=createFirstVisitUI(root,{getState:()=>state,getNote:()=>note,isNoteDirty:()=>noteDirty,extras:{date:()=>field('date','Fecha de consulta','date'),measurements:()=>'<div class="fields">'+field('birth','Nacimiento · solo para cálculos de crecimiento','date')+field('sex','Sexo de referencia para crecimiento','select',[['','No indicado'],['femenino','Femenino'],['masculino','Masculino']])+'</div>'+measurementSection(),questionnaires:()=>questionnaireSection(),goals:()=>goalsSection()},onEdit:()=>{state.accepted=[];if(note)noteStatus('Formulario modificado · nota conservada, pendiente de actualizar');}});
 const escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -32,12 +34,13 @@ function section(id,number,title,subtitle,content,open=false){return `<details c
 function render(){
  root.dataset.module=activeModule;
  if(activeModule==='fever'){feverUI.render();return;}
+ if(activeModule==='vaccines'){vaccineUI.render();return;}
  if(activeModule==='otalgia'){otalgiaUI.render();return;}
  if(state.mode==='first'){firstUI.render();updateDerived();updateNoteCount();return;}
  root.innerHTML=`
  <aside class="sidebar"><a class="brand" href="#workspace" aria-label="Consulta Pediatría, inicio"><span class="brand-icon" aria-hidden="true">✚</span><span>consulta<small>PEDIATRÍA</small></span></a>
- <p class="nav-label">ESPACIO CLÍNICO</p><a class="side-link active" aria-current="page" data-module="tdah" href="#workspace"><span aria-hidden="true">◉</span> TDAH <span class="small-badge">01</span></a><a class="side-link" href="#workspace" data-module="fever">◉ Fiebre <span class="small-badge">02</span></a><a class="side-link" data-module="otalgia" href="#workspace">◉ Otalgia <span class="small-badge">03</span></a>
- <div class="sidebar-bottom"><span class="local-dot"></span> Procesamiento local<small>Sin IA, analítica ni telemetría.<br>Los datos viven en esta pestaña.</small><a href="#privacy">Privacidad y fuentes ↗</a></div></aside>
+ <p class="nav-label">ESPACIO CLÍNICO</p><a class="side-link active" aria-current="page" data-module="tdah" href="#workspace"><span aria-hidden="true">◉</span> TDAH <span class="small-badge">01</span></a><a class="side-link" href="#workspace" data-module="fever">◉ Fiebre <span class="small-badge">02</span></a><a class="side-link" data-module="otalgia" href="#workspace">◉ Otalgia <span class="small-badge">03</span></a><a class="side-link" data-module="vaccines" href="#workspace">◉ Cartilla vacunal <span class="small-badge">04</span></a>
+ <div class="sidebar-bottom"><span class="local-dot"></span> Procesamiento local<small>Sin IA externa, analítica ni telemetría.<br>Los datos viven en esta pestaña.</small><a href="#privacy">Privacidad y fuentes ↗</a></div></aside>
  <div class="page"><header class="topbar"><span>Pediatría de atención primaria <span class="muted">/</span> <strong>TDAH</strong></span><span class="prototype">PROTOTIPO · REVISIÓN PROFESIONAL</span></header>
  <main id="workspace" tabindex="-1"><div class="page-heading"><div><p class="eyebrow">CUADERNO DE CONSULTA</p><h1>Una consulta, bien recogida.</h1><p class="lead">Anamnesis, objetivos y seguimiento del TDAH en un mismo lugar.</p></div><span class="memory"><span class="local-dot"></span> Solo en esta pestaña</span></div>
  <div class="toolbar"><div class="mode-switch" role="group" aria-label="Tipo de consulta"><button data-mode="first" aria-pressed="${state.mode==='first'}">01 <span>Primera consulta</span></button><button data-mode="follow" aria-pressed="${state.mode==='follow'}">02 <span>Consulta sucesiva</span></button></div><div class="tools"><button class="text-button" data-action="import">Importar consulta previa</button><button class="text-button" data-action="export">Exportar JSON</button><button class="text-button danger" data-action="reset">Reiniciar</button><input type="file" id="import-file" accept=".json,application/json" hidden></div></div>
@@ -165,7 +168,7 @@ root.addEventListener('click',async e=>{
  }
 });
 function showTransfer(){document.getElementById('transfer-panel').innerHTML=`<div class="transfer"><h2>Trasladar desde una consulta previa</h2><p>Fecha indicada en el archivo: ${escape(previous.date||'no consta')}. Comprueba el caso fuera de la aplicación.</p><label class="check"><input id="same-case" type="checkbox"> He comprobado que corresponde al mismo caso</label><label class="check"><input id="transfer-goals" type="checkbox"> Reemplazar objetivos (${previous.goals.length}); sin evolución previa</label><label class="check"><input id="transfer-drug" type="checkbox"> Reemplazar tratamiento; revisión clínica pendiente</label><label class="check"><input id="transfer-measurements" type="checkbox"> Reemplazar mediciones previas (${previous.measurements.length}); no modifica la medición actual</label><details><summary>Revisar contenido antes de trasladar</summary><h3>Objetivos</h3>${list(previous.goals.map(g=>g.description+' · basal: '+g.baseline+' · criterio: '+g.criterion))}<h3>Tratamiento</h3>${list(drugFields.filter(([k])=>previous.drug[k]).map(([k,l])=>l+': '+previous.drug[k]))}<h3>Mediciones previas</h3>${list(previous.measurements.map(measurementText))}</details><div class="button-row"><button class="primary" data-action="apply-transfer">Trasladar selección</button><button class="secondary" data-action="cancel-transfer">Cancelar y descartar archivo</button></div></div>`;document.getElementById('same-case').focus();}
-window.addEventListener('beforeunload',e=>{if(otalgiaUI.hasData()||feverUI.hasData()||note||JSON.stringify(state)!==initialSnapshot){e.preventDefault();e.returnValue='';}});
+window.addEventListener('beforeunload',e=>{if(vaccineUI.hasData()||otalgiaUI.hasData()||feverUI.hasData()||note||JSON.stringify(state)!==initialSnapshot){e.preventDefault();e.returnValue='';}});
 render();
 
 function goalsSection(){return section('goals','—','Objetivos funcionales','Situación basal → cambio observable',`<p class="hint">Prioriza problemas medibles. Ejemplo ficticio: «deberes 90 min/día» → «terminar en 60 min con dos recordatorios».</p><div id="goal-list">${goalList()}</div><button class="secondary" data-action="add-goal">+ Añadir objetivo</button>`,true);}
