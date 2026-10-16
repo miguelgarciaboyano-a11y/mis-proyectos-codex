@@ -1,0 +1,22 @@
+{
+  "retrieved": "2026-10-16",
+  "license": "GPL >= 3",
+  "sources": {
+    "2006": {
+      "repository": "https://github.com/WorldHealthOrganization/anthro",
+      "commit": "b776d8a12b1c97369c748b561159fd2ec4f4db58"
+    },
+    "2007": {
+      "repository": "https://github.com/WorldHealthOrganization/anthroplus",
+      "commit": "7cfcdb39026e9a55de55732bc3cf14c82261bcf7"
+    }
+  },
+  "files": {
+    "2006/bmianthro.txt": "78a4364e99303114fb2c458d28d64c6d10ac33832a5d5b2d437bc5cea1c93a0d",
+    "2006/lenanthro.txt": "709f7a11881451daf7820f022d363d5bdb93746b5361d6bd9218af6ff838e0c2",
+    "2006/weianthro.txt": "bc15a6a623dd1d5beaeed1497666332aa54bc4ccd15ff9658c487d79694ab77b",
+    "2007/bfawho2007.txt": "70ef3260df08e48ce560c28cff4e733db78fb952cbd881eba63c9d3a15f38a6a",
+    "2007/hfawho2007.txt": "9ac02aa4908f8ec3c6ba2362a4c7e1356043408b2873548ca22eedc016c235ad",
+    "2007/wfawho2007.txt": "9234dc640ba54001a9afd42ef15ab675b211a721c8f3c0a07c3431fd9cea0e1c"
+  }
+}
