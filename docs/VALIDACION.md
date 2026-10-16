@@ -89,3 +89,6 @@ Nueva prueba de navegador: acceso directo a otitis.html, un único apartado sin 
 ## Cartilla vacunal · 17/10/2026
 
 14 pruebas nuevas, 118 unitarias totales; sintaxis de 20 módulos. Nuevo recorrido de navegador para texto/combos, fechas y edades, revisión, anomalías, reporte/copia, conservación entre módulos, formato de foto rechazado, cancelación y OCR real de una imagen sintética. Comprueba ausencia de peticiones a terceros, POST, localStorage, sessionStorage o IndexedDB, sin violaciones CSP, entrada HTML sin ejecución, accesibilidad y cuatro anchos. La comparación AEP/Madrid y las vacunas pendientes NO están evaluadas ni implementadas como recomendador: fuentes oficiales pendientes por HTTP 403, según CARTILLA_VACUNAL.md.
+
+### Recorte local de cartillas
+118 pruebas unitarias superadas. Navegador: recorte inválido, previsualización de región con contraste, restablecimiento, OCR real con texto impreso sintético, cancelación, privacidad sin envíos, accesibilidad y cuatro anchos superados. No se ha medido exactitud sobre los manuscritos aportados: estos controles ayudan a la revisión manual y no sustituyen un lector de manuscritos.

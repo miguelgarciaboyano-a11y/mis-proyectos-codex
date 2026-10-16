@@ -33,3 +33,7 @@ Agrupa registros por grupo vacunal, con producto, fecha y edad; distingue transc
 ## Validación técnica
 
 14 pruebas unitarias de fechas, bisiestos, edades, combinadas, productos/valencias, líneas ambiguas, fechas incompletas, anomalías, solapamientos, VRS, límites, bloqueo por falta de fuentes e integridad de archivos. Chromium recorre pegado, revisión y corrección, informe/copia, navegación/reinicio, entrada maliciosa sin ejecución, formatos de imagen rechazados, cancelación y OCR real local, CSP, ausencia de almacenamiento y envío, accesibilidad y cuatro anchos. Estas pruebas no validan clínicamente pautas ni recomendaciones, que siguen pendientes de fuentes.
+
+### Lectura local por zonas
+La foto puede girarse y recortarse mediante límites porcentuales referidos a la imagen girada. «Ver recorte y ajustes» muestra exactamente la región que recibirá el OCR. Se ofrece contraste en escala de grises y segmentación de bloque, texto disperso o línea única. Cada lectura añade texto editable; no relaciona automáticamente columnas de una tabla ni confirma manuscritos. Restablecer muestra la imagen completa. No se envían fotos ni texto a servicios externos.
+Estas mejoras facilitan la revisión manual; no garantizan transcripción perfecta. La prueba automatizada usa texto impreso sintético, no valida las fotos manuscritas aportadas por el usuario.
