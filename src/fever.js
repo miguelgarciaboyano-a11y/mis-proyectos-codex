@@ -1,8 +1,7 @@
 // Plantilla documental solicitada por el profesional. No diagnostica ni decide el alta.
 export const FEVER_SYMPTOMS=[['catarrhal','Síntomas catarrales'],['cough','Tos'],['breathing','Dificultad respiratoria'],['diarrhea','Diarrea'],['vomiting','Vómitos'],['pain','Dolor'],['throat','Odinofagia'],['rash','Exantema'],['urinary','Molestias urinarias'],['earache','Otalgia']];
-import {assembleExam} from './fever-exam.js';
-export {EXAM} from './fever-exam.js';
-export function newFever(){return {days:'',ageMonths:'',symptoms:Object.fromEntries(FEVER_SYMPTOMS.map(([id])=>[id,{present:'no',days:'',count:'',hours:'',location:''}])),contacts:'no',contactWho:'',contactIllness:'',extraHistory:'',examAlterations:'',returnMode:'total3',customReturn:'',adviceText:''};}
+import {buildSummary} from './note-summary.js';
+export function newFever(){return {days:'',ageMonths:'',symptoms:Object.fromEntries(FEVER_SYMPTOMS.map(([id])=>[id,{present:'',days:'',count:'',hours:'',location:''}])),contacts:'',contactWho:'',contactIllness:'',extraHistory:'',examAlterations:'',returnMode:'total3',customReturn:'',adviceText:'',relevantHistory:'',tests:'',assessment:'',plan:'',pending:''};}
 const num=x=>x!==''&&x!=null&&Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
 export function isInfant(s){const a=num(s.ageMonths);return a!==null&&a<12;}
 export function feverWarnings(s){
@@ -13,8 +12,8 @@ export function feverWarnings(s){
  if(days!==null&&days>=3)warnings.push('Fiebre de 3 días o más: requiere reevaluar su persistencia; no aplazar automáticamente otros dos días.');
  for(const [id,label] of FEVER_SYMPTOMS){const x=s.symptoms[id];if(x.present!=='si')continue;
   if(x.days!==''&&num(x.days)===null)warnings.push(label+': revisar duración en días.');
-  if(['diarrhea','vomiting'].includes(id)&&x.count!==''&&(num(x.count)===null||!Number.isInteger(Number(x.count))))warnings.push(label+': el número en 24 horas debe ser un entero no negativo.');
-  if(id==='vomiting'&&x.hours!==''&&num(x.hours)===null)warnings.push('Vómitos: revisar horas desde el último episodio.');
+  if(['diarrhea','vomiting'].includes(id)&&x.count!==''&&x.count!=null&&(num(x.count)===null||!Number.isInteger(Number(x.count))))warnings.push(label+': el número en 24 horas debe ser un entero no negativo.');
+  if(id==='vomiting'&&x.hours!==''&&x.hours!=null&&num(x.hours)===null)warnings.push('Vómitos: revisar horas desde el último episodio.');
  }
  return warnings;
 }
@@ -26,43 +25,38 @@ export function defaultAdvice(s){
  if(num(s.ageMonths)!==null&&Number(s.ageMonths)<3)next='Menor de 3 meses: ante fiebre ≥38 °C, valoración urgente; no aplicar un plazo de espera domiciliaria.';
  return 'Se explican signos de alarma: mal estado general, dificultad respiratoria, somnolencia anormal, lesiones que no desaparecen a la presión o signos de deshidratación; acudir de inmediato si aparecen.\n'+next;
 }
-export function feverExam(s){
- return 'Exploración física: '+assembleExam(s.examAlterations,isInfant(s)).text;
-}
-const sentence=x=>/[.!?]$/.test(x.trim())?x.trim():x.trim()+'.';
+export function feverExam(s){return feverSummary(s).text.split('\n').find(line=>line.startsWith('Exploración:'));}
 const duration=x=>num(x)===null?'':` de ${x} ${Number(x)===1?'día':'días'} de evolución`;
-function enumeration(parts,last='y'){
- return parts.length<2?parts.join(''):parts.slice(0,-1).join(', ')+' '+last+' '+parts.at(-1);
-}
-function ageDescription(months){
- const n=num(months);if(n===null)return '';
- if(n<1)return 'menor de un mes';
- if(n<24)return `${months} ${n===1?'mes':'meses'}`;
- const years=Math.floor(n/12),rest=n%12;
- return `${years} ${years===1?'año':'años'}`+(rest?` y ${Number(rest.toFixed(2))} ${rest===1?'mes':'meses'}`:'');
-}
-export function feverNote(s){
- const age=ageDescription(s.ageMonths),history=[`${age?'Paciente '+(age.startsWith('menor')?'':'de ')+age+' que consulta':'Consulta'} por fiebre${duration(s.days)}.`],positive=[],negative=[];
+export function feverSummary(s){
+ const history=[],pending=[];
+ if(s.ageMonths!=='')history.push({text:'Edad: '+s.ageMonths+' meses',priority:70});
+ const negative=[];
  for(const [id,label] of FEVER_SYMPTOMS){
-  const x=s.symptoms[id];if(x.present!=='si'){negative.push(label.toLocaleLowerCase('es'));continue;}
-  let text=label.toLocaleLowerCase('es');
-  if(id==='pain'&&x.location.trim())text+=' localizado en '+x.location.trim();
-  text+=duration(x.days);
+  const x=s.symptoms[id];
+  if(x.present==='no'){negative.push(label.toLocaleLowerCase('es'));continue;}
+  if(x.present!=='si')continue;
+  let text=label+duration(x.days);
   const details=[];
-  if(['diarrhea','vomiting'].includes(id)&&num(x.count)!==null){
-   const unit=id==='diarrhea'?(Number(x.count)===1?'deposición':'deposiciones'):(Number(x.count)===1?'episodio':'episodios');
-   details.push(`${x.count} ${unit} en las últimas 24 horas`);
-  }
-  if(id==='vomiting'&&num(x.hours)!==null)details.push(`último vómito hace ${x.hours} ${Number(x.hours)===1?'hora':'horas'}`);
+  if(id==='pain'&&x.location?.trim())details.push('localización: '+x.location.trim());
+  if(['diarrhea','vomiting'].includes(id)&&x.count!==''&&x.count!=null)details.push(`${x.count} ${id==='diarrhea'?'deposiciones':'vómitos'} en las últimas 24 horas`);
+  if(id==='vomiting'&&x.hours!==''&&x.hours!=null)details.push(`último vómito hace ${x.hours} horas`);
   if(details.length)text+=' ('+details.join('; ')+')';
-  positive.push(text);
+  history.push({text,priority:id==='breathing'?100:75});
+  if(!x.days&&x.days!==0)pending.push('Duración de '+label.toLocaleLowerCase('es')+' no aportada');
  }
- if(positive.length)history.push('Asocia '+enumeration(positive)+'.');
- if(negative.length)history.push((negative.length===1?'No se refiere ':'No se refieren ')+enumeration(negative,'ni')+'.');
- if(s.contacts==='si'){
-  const details=[s.contactWho.trim(),s.contactIllness.trim()].filter(Boolean);
-  history.push('Se refieren convivientes enfermos'+(details.length?' ('+details.join(': ')+')':'')+'.');
- }else history.push('No se refieren convivientes enfermos.');
- if(s.extraHistory.trim())history.push(sentence(s.extraHistory));
- return 'Anamnesis: '+history.join(' ')+'\n\n'+feverExam(s)+'\n\nPlan y recomendaciones: '+(s.adviceText.trim()||defaultAdvice(s));
+ if(negative.length)history.push({text:(negative.length===1?'No se refiere ':'No se refieren ')+negative.join(', '),priority:55});
+ if(s.contacts==='si')history.push({text:'Convivientes enfermos'+([s.contactWho.trim(),s.contactIllness.trim()].some(Boolean)?': '+[s.contactWho.trim(),s.contactIllness.trim()].filter(Boolean).join('; '):''),priority:60});
+ else if(s.contacts==='no')history.push({text:'No se refieren convivientes enfermos',priority:55});
+ if(s.extraHistory.trim())history.push({text:s.extraHistory,priority:85});
+ if(s.pending?.trim())pending.unshift(s.pending);
+ if(!s.examAlterations.trim())pending.push('Exploración no aportada');
+ if(!s.assessment?.trim())pending.push('Valoración no aportada');
+ if(!s.plan?.trim()&&!s.adviceText.trim())pending.push('Plan no aportado');
+ return buildSummary([
+  [{text:'Fiebre'+duration(s.days),priority:100}],history,
+  [s.relevantHistory],[{text:s.examAlterations,priority:100}],[s.tests],
+  [{text:s.assessment,priority:100}],
+  [{text:s.plan,priority:100},{text:s.adviceText,priority:95}],pending
+ ]);
 }
+export function feverNote(s){return feverSummary(s).text;}
