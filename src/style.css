@@ -37,3 +37,9 @@
 #first-schoolRequest{min-height:220px;line-height:1.7}.first-workspace .note-panel p{line-height:1.6}
 @media(max-width:1100px){.first-workspace .consultation-grid{grid-template-columns:1fr}.first-workspace .note-panel{position:static}}
 @media(max-width:650px){.first-workspace h1{font-size:25px}.first-progress>span{width:100%}.first-check{font-size:12px}}
+
+/* Otalgia: hallazgos compactos, diferenciados por oído. */
+.otalgia-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin:14px 0}.otalgia-checks label{display:flex;align-items:flex-start;gap:7px;font-size:.88rem;line-height:1.4}.otalgia-checks input{width:17px;height:17px;flex-shrink:0;margin-top:2px;accent-color:var(--green)}.otalgia-ears{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.otalgia-ears .section-body{padding:14px}.otalgia-ears .fields,.otalgia-ears .otalgia-checks{grid-template-columns:1fr}.otalgia-workspace li{margin-bottom:8px;font-size:.9rem;line-height:1.5}.otalgia-workspace [hidden]{display:none!important}
+@media(max-width:1100px){.otalgia-ears{grid-template-columns:1fr}}
+@media(max-width:850px){.sidebar{flex-wrap:wrap}.sidebar .side-link{white-space:nowrap}}
+@media(max-width:480px){.otalgia-checks{grid-template-columns:1fr}}

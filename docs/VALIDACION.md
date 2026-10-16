@@ -57,3 +57,7 @@ Se verifica que hay 12 bloques y 36 casillas, que marcar todas no cambia los hec
 El nuevo recorrido Chromium comprueba la interfaz completa, casillas sin inferencias, registro parcial, copiado real de nota y solicitud escolar (sin envío), objetivos/cuestionarios/constantes compartidos, edición manual preservada, cancelación de regeneración, cambios de recorrido y de apartado sin perder respuestas, exportación completa y reinicio. Axe no detectó infracciones de los criterios automatizados WCAG 2 A/AA y 2.1 AA; navegación por teclado y cuatro anchos (1440/1024/768/390 px) sin desbordamiento horizontal. Sin errores JavaScript ni solicitudes externas. Captura local `test-results/first-visit.png`, ignorada por Git.
 
 Datos ficticios. Esta evidencia técnica no valida diagnóstico, triaje, protocolos locales, indicación de pruebas/tratamientos/derivación ni una duración real de 15–20 minutos.
+
+## Otalgia · 16/10/2026
+
+Añadidas 12 pruebas unitarias (82 en total) y una prueba Chromium de la tercera página. Incluyen umbrales de edad y dosis, ausencia de inferencias, alergias, riesgos, oído derecho/izquierdo, adopción explícita e invalidación. Sintaxis de 15 módulos. Alcance clínico documentado en OTALGIA.md. Todas las pruebas unitarias y los cuatro recorridos de navegador superados.

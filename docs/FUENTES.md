@@ -36,3 +36,7 @@ Los consejos orientativos de Fiebre siguen siendo propuestas fuera de la nota. E
 El usuario aporta el objetivo (6–13 años, entrevista de 15–20 minutos), los doce bloques, el enfoque neutral y la diferenciación de familia/colegio/pediatría. [PRIMERA_CONSULTA.md](PRIMERA_CONSULTA.md) conserva la checklist y la plantilla de solicitud escolar de seis líneas. Desarrollo, aprendizaje, sueño y bienestar ya estaban en los guiones; visión/audición, hábitos, medicación, voz del menor, prioridades y diferenciación de fuentes se explicitan según la nueva petición. Las posibilidades diferenciales son hipótesis a contrastar, no resultados de la checklist.
 
 No se añaden criterios diagnósticos, umbrales de escalas ni circuitos locales. Las casillas solo registran preguntas abordadas y no entran como hallazgos en la síntesis. La valoración, el plan y la prioridad requieren texto o selección expresos del profesional. Las actuaciones se presentan para contraste con protocolos locales. Los anexos de cuestionarios y crecimiento mantienen sus fuentes y restricciones previas. Primera consulta, seguimiento y Fiebre disponen de campos diferenciados; la síntesis final sigue la política documental de 180 palabras. No es una herramienta clínica validada.
+
+### Otalgia
+
+Reglas clínicas facilitadas por el usuario el 16/10/2026, implementadas como propuestas revisables. No contrastadas con una guía externa vigente. Límites, excepciones y diferencias de automatización: [OTALGIA.md](OTALGIA.md).
