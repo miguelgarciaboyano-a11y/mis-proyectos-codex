@@ -1,6 +1,6 @@
 # Consulta · Pediatría
 
-Aplicación web local en español para primera consulta y seguimiento con tratamiento del **TDAH** en atención primaria pediátrica. Creada sobre el repositorio existente, que solo contenía un README. Prototipo funcional para revisión profesional: **no validado para uso clínico**, no diagnostica ni prescribe.
+Aplicación web local en español con pestañas **TDAH** (primera consulta y seguimiento) y **Fiebre** (anamnesis, exploración y nota editable) en atención primaria pediátrica. Creada sobre el repositorio existente, que solo contenía un README. Prototipo funcional para revisión profesional: **no validado para uso clínico**, no diagnostica ni prescribe.
 
 ## Iniciar
 
@@ -84,3 +84,13 @@ No hay backend, cuentas, multitenencia, sincronización ni historial persistente
 - Pruebas realizadas en Chromium; pendientes otros navegadores, lector de pantalla, auditoría WCAG completa y validación prospectiva del flujo asistencial.
 
 Correspondencia de las fuentes: [FUENTES.md](docs/FUENTES.md). Datos/métodos OMS: © World Health Organization, GPL ≥3; se conserva licencia y atribución en `vendor/who/`. Revisar sus términos antes de redistribuir. Esta aplicación no está avalada por la OMS, NICHQ ni AAP.
+
+## Pestaña Fiebre
+
+Diez síntomas: catarrales, tos, dificultad respiratoria, diarrea, vómitos, dolor, odinofagia, exantema, molestias urinarias y otalgia. «Sí» habilita días de evolución y los detalles específicos: deposiciones/vómitos en 24 h, horas desde último vómito y localización del dolor. Convivientes enfermos se recoge aparte.
+
+Los «No» iniciales requieren confirmar anamnesis revisada para entrar como negativos en la nota. Escribe solo las alteraciones en los apartados de exploración: cada texto sustituye su frase normal completa. Confirmar la exploración es indispensable para añadir la plantilla normal; FANT se incluye con edad conocida <12 meses. No se interpreta texto libre mediante IA.
+
+Los consejos propuestos ocupan dos líneas lógicas y requieren confirmar que se revisaron y explicaron. Plazo a elegir: 3 días totales, 2 días adicionales o personalizado; con ≥3 días de fiebre se propone reevaluación actual, y en <3 meses con fiebre ≥38 °C valoración urgente. No se determina el alta ni se ofrece protección legal. Es posible personalizar el texto completo.
+
+Cambiar de pestaña conserva ambas consultas y notas en memoria, sin mezclar datos. Reiniciar fiebre borra solo esa consulta. `src/fever.js` contiene el ensamblado de nota y `src/fever-app.js` la interfaz. Pruebas: `tests/fever.test.js` y `tests/fever-browser.cjs`. Para ver el detalle de todas las pruebas en este entorno: `node --test --test-isolation=none tests/*.test.js` (Node 22+).

@@ -37,3 +37,11 @@ Las capturas del recorrido se generan en `test-results/desktop.png` y `test-resu
 Es una verificación técnica del prototipo, no una validación clínica ni una certificación WCAG. Pendientes: revisión profesional de reglas/notas y percentiles, otros navegadores, lector de pantalla, circuito asistencial real, clasificación Vanderbilt, fuentes Conners, referencias TA/FC y actualización farmacológica mediante fichas técnicas oficiales. No hay diagnóstico automático ni prescripción validada.
 
 La configuración reutilizable de nube contiene `install_script` y `start_skill` guardados como borrador. Guardar ese borrador no ejecuta ni publica la configuración. La instancia actual se ha probado; no se afirma haber verificado restauración en una tarea nueva ni publicación del entorno.
+
+## Ampliación Fiebre
+
+Se ejecutó `node --test --test-isolation=none tests/*.test.js`: **52 pruebas aprobadas**, 0 fallidas y 0 omitidas (42 previas y 10 de fiebre). La ejecución sin aislamiento permite ver las pruebas individuales en el entorno actual. Sintaxis comprobada de los 10 módulos.
+
+Se volvió a ejecutar el recorrido Chromium de TDAH y se ejecutó `tests/fever-browser.cjs`: diez síntomas y detalles específicos, negativos pendientes/revisados, contactos, sustitución de frases de exploración sin contradicción, FANT <12 meses, avisos por edad/persistencia, confirmación de consejos, conservación de edición manual, copia real, conservación independiente de ambas consultas y reinicio de fiebre. Axe no detectó infracciones en la pestaña Fiebre; sin desbordamiento horizontal a 1024, 768 y 390 px. Sin errores JavaScript. Los ensayos usaron datos ficticios.
+
+No implica validación clínica del módulo Fiebre ni garantía jurídica. La exploración normal y el registro de consejos explicados son afirmaciones confirmadas por el profesional, no hallazgos inferidos por el software.
