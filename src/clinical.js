@@ -1,7 +1,8 @@
 import {symptoms,differentials,cvFields,adverseEffects,interviewGroups,drugFields,followFields} from './schema.js';
 import {measurementText,measurementWarnings,numeric} from './measurements.js';
-import {questionnaireText} from './questionnaires.js';
-import {ageDays,growthForMeasurement,formatGrowth} from './percentiles.js';
+import {ageDays} from './percentiles.js';
+import {buildSummary} from './note-summary.js';
+import {VERSIONS} from './questionnaires.js';
 export const SOURCES={interview:'Anamnesis TDAH explicada, pp. 1–4 (sin fecha)',med:'Metilfenidato, p. 2, apartados 3–5 (sin fecha)'};
 export function synthesis(s){
  const i=s.interview,support=[],gaps=[],alternatives=[],next=[];
@@ -72,30 +73,46 @@ export function ramText(s){
  });
  if(s.otherRam)lines.push('Otras RAM: '+s.otherRam);return lines.join('\n');
 }
-export function generateNote(s){
- const blocks=[`TDAH · ${s.mode==='first'?'PRIMERA CONSULTA':'CONSULTA SUCESIVA CON TRATAMIENTO'}${s.date?' · '+s.date:''}`];
- const add=(title,lines)=>{const body=lines.filter(Boolean).join('\n');if(body)blocks.push(title+'\n'+body);};
- if(s.birth||s.sex)add('DATOS PARA CÁLCULOS',[s.birth&&'Nacimiento: '+s.birth,s.sex&&'Sexo de referencia para crecimiento: '+s.sex]);
- for(const g of interviewGroups)add(g.title.toLocaleUpperCase('es'),g.fields.filter(([k])=>s.interview[k]).map(([k,l,t])=>`${l}: ${t==='state'?stateLabel(s.interview[k]):s.interview[k]}`));
- add('SÍNTOMAS REFERIDOS (ENTREVISTA, SIN PUNTUACIÓN DIAGNÓSTICA)',[
- ...symptoms.filter(([k])=>s.symptoms[k]!==''&&s.symptoms[k]!=null).map(([k,l])=>`${l}: ${['nunca/casi nunca','a veces','frecuente','muy frecuente'][Number(s.symptoms[k])]}.`),s.symptomExamples&&'Ejemplos e inicio por síntoma: '+s.symptomExamples]);
- add('CRIBADO DIFERENCIAL',[
- ...differentials.filter(([k])=>s.differential[k]).map(([k,l])=>`${l}: ${stateLabel(s.differential[k])}.`),
- s.differentialDetails,s.selfHarm&&'Verbalizaciones autolesivas / ideas de muerte: '+stateLabel(s.selfHarm)]);
- add('CRIBADO CARDIOVASCULAR DIRIGIDO',[
- ...cvFields.filter(([k])=>s.cv[k]).map(([k,l])=>`${l}: ${stateLabel(s.cv[k])}.`),s.cvDetails]);
- add('OBJETIVOS FUNCIONALES',s.goals.filter(g=>g.description||g.baseline||g.criterion||g.current).map((g,i)=>`${i+1}. ${g.description||'Descripción pendiente'}; contexto: ${g.context||'pendiente'}; basal: ${g.baseline||'pendiente'}; criterio de mejoría: ${g.criterion||'pendiente'}${g.current?'; evolución: '+g.current:''}`));
- add('CUESTIONARIOS — DATOS INTRODUCIDOS',s.questionnaires.map(questionnaireText));
- const measurements=[...s.measurements,...(Object.keys({weight:1,height:1,sbp:1,dbp:1,hr:1}).some(k=>s.measurement[k]!==''&&s.measurement[k]!=null)?[s.measurement]:[])];
- add('ANTROPOMETRÍA Y CONSTANTES',[
- ...measurements.flatMap(m=>[measurementText(m),...Object.entries(growthForMeasurement(m,s.birth,s.sex)).map(([k,r])=>({weight:'Peso/edad',height:'Talla o longitud/edad',bmi:'IMC/edad'}[k])+': '+formatGrowth(r))]),...measurementWarnings(s.measurement),measurements.length&&'Método de percentiles: LMS OMS 2006 diario / OMS 2007 interpolado (edad en días/30,4375), ajuste de colas en peso/IMC. Talla/longitud estandarizada según técnica en menores de 5 años. Percentiles de TA/FC no disponibles. Cálculos pendientes de revisión profesional.',
- s.constantsReview&&'Valoración profesional de constantes: '+(s.constantsReview==='compatible'?'revisadas, compatibles con el plan considerado':'requieren revisión adicional')]);
- add(s.mode==='first'?'TRATAMIENTO REGISTRADO / INICIO SI PROCEDE':'TRATAMIENTO PREVIO A LA CONSULTA',drugFields.filter(([k])=>s.drug[k]).map(([k,l])=>`${l}: ${s.drug[k]}`));
+export function noteSummary(s){
+ const i=s.interview,history=[],background=[],exam=[],tests=[],plan=[],pending=[];
+ const add=(target,text,priority=50)=>{if(text)target.push({text,priority});};
+ if(s.date)add(history,'Fecha: '+s.date,100);
+ for(const [k,label] of [['onset','Inicio'],['duration','Duración'],['contexts','Entornos'],['academic','Impacto académico'],['autonomy','Autonomía'],['relationships','Relaciones'],['wellbeing','Bienestar'],['current','Intervenciones actuales']])if(i[k])add(history,label+': '+i[k],70);
+ for(const [k,label] of symptoms)if(s.symptoms[k]!==''&&s.symptoms[k]!=null)add(history,label+': '+['nunca/casi nunca','a veces','frecuente','muy frecuente'][Number(s.symptoms[k])],60);
+ add(history,s.symptomExamples,75);
+ for(const [k,label] of differentials)if(s.differential[k])add(background,label+': '+stateLabel(s.differential[k]),s.differential[k]==='si'?80:30);
+ add(background,s.differentialDetails,75);
+ for(const [k,label] of [['personal','Personales'],['family','Familiares'],['previous','Intervenciones previas']])if(i[k])add(background,label+': '+i[k],75);
+ if(s.selfHarm)add(history,'Verbalizaciones autolesivas / ideas de muerte: '+stateLabel(s.selfHarm),100);
+ const treatment=drugFields.filter(([k])=>s.drug[k]).map(([k,label])=>label+': '+s.drug[k]);
+ if(treatment.length)add(history,'Tratamiento registrado: '+treatment.join('; '),95);
  if(s.mode==='follow'){
-  add('SEGUIMIENTO DEL TRATAMIENTO',followFields.filter(([k])=>s.follow[k]).map(([k,l,t,opts])=>`${l}: ${t==='state'?stateLabel(s.follow[k]):t==='select'?(opts.find(([v])=>v===s.follow[k])?.[1]||s.follow[k]):s.follow[k]}`));
-  add('TOLERABILIDAD — LISTA DE LA GUÍA DE METILFENIDATO, NO EXHAUSTIVA',[ramText(s)]);
+  for(const [k,label,t,opts] of followFields)if(s.follow[k])add(history,label+': '+(t==='state'?stateLabel(s.follow[k]):t==='select'?(opts.find(([v])=>v===s.follow[k])?.[1]||s.follow[k]):s.follow[k]),75);
+  if(s.ramReviewed){
+   const yes=[],no=[];
+   for(const [k,label] of adverseEffects){const r=s.ram[k];if(r?.present)yes.push(label+': '+[['intensity','intensidad'],['onset','aparición'],['impact','repercusión'],['notes','observaciones']].filter(([key])=>r[key]).map(([key,name])=>name+' '+r[key]).join('; '));else no.push(label.toLocaleLowerCase('es'));}
+   yes.forEach(text=>add(history,text,100));
+   if(no.length)add(history,'RAM revisadas, no referidas: '+no.join(', '),65);
+   add(history,s.otherRam,95);
+  }else pending.push('Reacciones adversas no revisadas');
  }
- add('VALORACIÓN INTRODUCIDA POR EL PROFESIONAL',[s.assessment]);
- add('PLAN INTRODUCIDO / ACEPTADO POR EL PROFESIONAL',[s.plan,...s.accepted.map(p=>p.text+' [Propuesta orientativa aceptada por el profesional; fuente: '+p.source+']'),s.followup&&'Seguimiento: '+s.followup]);
- return blocks.join('\n\n');
+ for(const g of s.goals)if(g.description)add(history,'Objetivo: '+g.description+[g.baseline&&'basal: '+g.baseline,g.criterion&&'criterio: '+g.criterion,g.current&&'evolución: '+g.current].filter(Boolean).map(x=>'; '+x).join(''),65);
+ add(exam,i.examination,100);
+ if(['weight','height','sbp','dbp','hr'].some(k=>s.measurement[k]!==''&&s.measurement[k]!=null))add(exam,measurementText(s.measurement),100);
+ if(!i.examination)pending.push('Exploración física no aportada');
+ // Los cuestionarios no son diagnósticos y se sintetizan sin nombres de informantes.
+ for(const q of s.questionnaires){const version=VERSIONS[q.type];if(!version)continue;
+  const scores=version.scales.filter(([k])=>q.scores?.[k]!==''&&q.scores?.[k]!=null).map(([k,label])=>label+': '+q.scores[k]);
+  add(tests,version.label+(q.date?'; fecha: '+q.date:'')+(scores.length?'; '+scores.join('; '):'; puntuaciones no aportadas'),65);
+  if(q.interpretation)add(tests,'Interpretación introducida por el profesional: '+q.interpretation,65);
+ }
+ for(const [k,label] of cvFields)if(s.cv[k])add(background,label+': '+stateLabel(s.cv[k]),s.cv[k]==='si'?100:25);
+ add(background,s.cvDetails,85);
+ add(plan,s.plan,100);
+ for(const p of s.accepted)add(plan,'Opción aceptada por el profesional: '+p.text,90);
+ if(s.followup)add(plan,'Seguimiento: '+s.followup,100);
+ if(!s.assessment)pending.push('Valoración no aportada');
+ if(!plan.length)pending.push('Plan no aportado');
+ return buildSummary([[{text:i.reason,priority:100}],history,background,exam,tests,[{text:s.assessment,priority:100}],plan,pending]);
 }
+export function generateNote(s){return noteSummary(s).text;}

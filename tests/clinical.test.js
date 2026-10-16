@@ -52,8 +52,8 @@ test('respuesta buena suficiente -> valorar mantener, sin prescripción',()=>{co
 test('respuesta buena corta -> cobertura, sin conversiones',()=>{const s=complete();s.follow.coverage='corta';const p=therapyProposal(s);assert.equal(p.id,'coverage');assert.match(p.text,/No aumentar por reflejo/);});
 test('RAM revisadas positivas priorizan tolerabilidad',()=>{const s=complete();s.ram.appetite.present=true;assert.equal(therapyProposal(s).id,'tolerance');});
 test('respuesta insuficiente no produce escalones numéricos',()=>{const s=complete();s.follow.response='parcial';const p=therapyProposal(s);assert.equal(p.id,'response');assert.match(p.text,/Sin propuesta de dosis/);});
-test('propuesta no aceptada excluida del plan; aceptada entra con fuente',()=>{
- const s=complete();assert.doesNotMatch(generateNote(s),/valorar mantener/i);s.accepted=[therapyProposal(s)];assert.match(generateNote(s),/aceptada por el profesional; fuente:/);
+test('propuesta no aceptada excluida del plan; aceptada se identifica expresamente',()=>{
+ const s=complete();assert.doesNotMatch(generateNote(s),/valorar mantener/i);s.accepted=[therapyProposal(s)];assert.match(generateNote(s),/Opción aceptada por el profesional:/);
 });
 test('IMC unidades kg y cm: 25 kg, 125 cm = 16',()=>{assert.equal(bmi({weight:'25',height:'125'}),16);});
 test('IMC ausente o no calculable no produce infinito ni cero ficticio',()=>{

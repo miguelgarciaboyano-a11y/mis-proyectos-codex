@@ -1,30 +1,41 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {newFever,FEVER_SYMPTOMS,feverExam,feverNote,defaultAdvice,isInfant,feverWarnings} from '../src/fever.js';
-import {EXAM,interpretExam,assembleExam} from '../src/fever-exam.js';
-test('diez síntomas No por defecto, sin estados de reconfirmación',()=>{const s=newFever();assert.equal(FEVER_SYMPTOMS.length,10);assert.ok(FEVER_SYMPTOMS.every(([id])=>s.symptoms[id].present==='no'));for(const key of ['historyReviewed','examReviewed','adviceReviewed','exam'])assert.equal(key in s,false);assert.match(feverNote(s),/No se refieren síntomas catarrales/);});
-test('nota narrativa estructurada, sin lista de sí ni mensajes de pendiente',()=>{
- const s=newFever();s.days='2';s.ageMonths='8';s.symptoms.cough={present:'si',days:'1'};
- const n=feverNote(s);assert.match(n,/Anamnesis: Paciente de 8 meses que consulta por fiebre de 2 días de evolución\. Asocia tos de 1 día de evolución\./);assert.match(n,/Exploración física: BEG/);assert.match(n,/Plan y recomendaciones:/);assert.doesNotMatch(n,/: sí|pendiente|revisad[oa]/);assert.equal(n.split('\n\n').length,3);
+import {newFever,FEVER_SYMPTOMS,feverExam,feverNote,feverSummary,defaultAdvice,feverWarnings} from '../src/fever.js';
+import {NOTE_HEADINGS,wordCount} from '../src/note-summary.js';
+test('Fiebre vacía no inventa negativos, exploración, diagnóstico o consejos',()=>{
+ const s=newFever(),n=feverNote(s);assert.equal(FEVER_SYMPTOMS.length,10);assert.ok(FEVER_SYMPTOMS.every(([id])=>s.symptoms[id].present===''));
+ assert.match(n,/^Exploración: no aportada\.$/m);assert.match(n,/^Valoración del pediatra: no aportada\.$/m);assert.match(n,/^Plan: no aportado\.$/m);
+ assert.doesNotMatch(n,/BEG|normal|sin soplos|No se refieren|FANT|Se explican signos/);
+ assert.deepEqual(n.split('\n').map(l=>l.split(':')[0]),NOTE_HEADINGS);assert.ok(wordCount(n)<=180);
 });
-test('detalles digestivos y dolor en frases clínicas, contactos integrados',()=>{
- const s=newFever();s.days='2';s.symptoms.diarrhea={present:'si',days:'1',count:'5'};s.symptoms.vomiting={present:'si',days:'2',count:'3',hours:'4'};s.symptoms.pain={present:'si',days:'1',location:'fosa ilíaca derecha'};s.contacts='si';s.contactWho='hermano';s.contactIllness='catarro';
- const n=feverNote(s);assert.match(n,/diarrea de 1 día de evolución \(5 deposiciones en las últimas 24 horas\)/);assert.match(n,/vómitos de 2 días de evolución \(3 episodios en las últimas 24 horas; último vómito hace 4 horas\)/);assert.match(n,/dolor localizado en fosa ilíaca derecha/);assert.match(n,/convivientes enfermos \(hermano: catarro\)/);
- s.symptoms.vomiting.present='no';assert.doesNotMatch(feverNote(s),/3 episodios/);
+test('solo los No elegidos por el profesional entran como negativos',()=>{
+ const s=newFever();s.symptoms.cough.present='no';s.contacts='no';const n=feverNote(s);assert.match(n,/No se refiere tos/);assert.match(n,/No se refieren convivientes enfermos/);assert.doesNotMatch(n,/No se refieren síntomas catarrales/);
 });
-test('campos ausentes se omiten sin inventar y cero explícito se conserva',()=>{const s=newFever();s.symptoms.vomiting.present='si';s.symptoms.vomiting.count='0';const n=feverNote(s);assert.match(n,/Consulta por fiebre\./);assert.match(n,/0 episodios en las últimas 24 horas/);assert.doesNotMatch(n,/último vómito hace|duración pendiente|undefined/);});
-test('edad clínica en años y meses sin modificar la precisión',()=>{const s=newFever();s.ageMonths='27';assert.match(feverNote(s),/Paciente de 2 años y 3 meses/);s.ageMonths='0';assert.match(feverNote(s),/Paciente menor de un mes/);});
-test('plantilla íntegra por defecto, FANT solo en menores de 12 meses',()=>{const s=newFever();s.ageMonths='11';for(const [,,normal] of EXAM)assert.ok(feverExam(s).includes(normal));for(const age of ['12','', '-1']){s.ageMonths=age;assert.doesNotMatch(feverExam(s),/FANT/);}s.ageMonths='0';assert.equal(isInfant(s),true);});
-test('cuadro único sustituye AP sin cambiar resto de exploración',()=>{const s=newFever();s.examAlterations='AP: sibilancias bilaterales.';const n=feverExam(s);assert.match(n,/AP: sibilancias bilaterales/);assert.doesNotMatch(n,/BVB|sin ruidos sobreañadidos/);assert.match(n,/AC rítmica, sin soplos/);assert.match(n,/ORL normal/);});
-test('se reconocen hallazgos sin prefijo y se retiran negativas incompatibles',()=>{const s=newFever();s.examAlterations='Exantema macular. Tímpano derecho abombado. Dolor abdominal en FID.';const n=feverExam(s);assert.match(n,/Exantema macular/);assert.match(n,/Tímpano derecho abombado/);assert.match(n,/Dolor abdominal en FID/);assert.doesNotMatch(n,/No lesiones cutáneas|Oídos normales|Abdomen blando/);assert.match(n,/AC rítmica/);});
-test('varios sistemas en una sola frase no duplican texto ni conservan normalidad',()=>{const p=assembleExam('Soplo sistólico y sibilancias bilaterales.',false);assert.deepEqual(new Set(p.affected),new Set(['cardiac','respiratory']));assert.equal((p.text.match(/sibilancias/g)||[]).length,1);assert.doesNotMatch(p.text,/sin soplos|BVB/);});
-test('prefijos y cláusulas por comas, punto y coma o saltos se interpretan',()=>{for(const text of ['AP: sibilancias; Oídos: tímpano abombado','AP: sibilancias, oídos: tímpano abombado','AP: sibilancias\nOídos: tímpano abombado','AP: sibilancias y oídos: tímpano abombado']){const p=interpretExam(text);assert.equal(p.conservative,false,text);assert.ok(p.affected.includes('respiratory'));assert.ok(p.affected.includes('ears'));}});
-test('fontanela patológica reemplaza FANT y se conserva aunque edad no conste',()=>{const s=newFever();s.ageMonths='8';s.examAlterations='Fontanela anterior abombada.';assert.match(feverExam(s),/Fontanela anterior abombada/);assert.doesNotMatch(feverExam(s),/FANT/);s.ageMonths='';assert.match(feverExam(s),/Fontanela anterior abombada/);});
-test('texto ambiguo no autoriza ninguna normalidad automática',()=>{const s=newFever();s.examAlterations='Hallazgo inesperado. AP: sibilancias.';const p=interpretExam(s.examAlterations);assert.equal(p.conservative,true);const n=feverExam(s);assert.match(n,/Hallazgo inesperado/);assert.match(n,/sibilancias/);assert.doesNotMatch(n,/BEG|sin soplos|ORL normal|No rigidez/);});
-test('decimales y abreviaturas no fragmentan las frases',()=>{const p=interpretExam('Abd. doloroso en FID. AP: crepitantes a 1.5 cm.');assert.equal(p.conservative,false);assert.ok(p.assignments.some(x=>x.text.includes('1.5')));assert.ok(p.affected.includes('abdomen'));});
-test('texto propio no genera diagnósticos ni se omite en ensamblado',()=>{const s=newFever();s.examAlterations='Hallazgo a valorar';assert.match(feverExam(s),/Hallazgo a valorar/);assert.doesNotMatch(feverExam(s),/diagnóstico|neumonía|otitis/);});
-test('consejos de dos líneas incluidos sin casillas, personalización respetada',()=>{const s=newFever();assert.equal(defaultAdvice(s).split('\n').length,2);assert.match(feverNote(s),/Se explican signos/);s.adviceText='Se individualizan las recomendaciones y el seguimiento.';assert.match(feverNote(s),/Se individualizan las recomendaciones/);});
-test('no pospone fiebre persistente o lactante pequeño dos días más',()=>{const s=newFever();s.returnMode='extra2';s.days='3';assert.match(defaultAdvice(s),/Reevaluar hoy/);assert.doesNotMatch(defaultAdvice(s),/en 48 horas/);s.ageMonths='2';assert.match(defaultAdvice(s),/valoración urgente/);assert.ok(feverWarnings(s).length>=2);});
-test('duraciones y cantidades inválidas se avisan sin perder datos',()=>{const s=newFever();s.days='-1';s.symptoms.diarrhea={present:'si',days:'-2',count:'1.5'};assert.equal(feverWarnings(s).length,3);assert.equal(s.symptoms.diarrhea.count,'1.5');});
-
-test('hallazgos adicionales conocidos se incorporan sin retirar normalidad ajena',()=>{const p=assembleExam('Adenopatías laterocervicales. SatO2 97%.',false);assert.equal(p.conservative,false);assert.match(p.text,/Adenopatías laterocervicales/);assert.match(p.text,/SatO2 97%/);assert.match(p.text,/AP: BVB/);assert.match(p.text,/Oídos normales/);});
+test('fechas, cifras y unidades no se convierten al redactar',()=>{
+ const s=newFever();s.days='2';s.ageMonths='27';s.symptoms.vomiting={present:'si',days:'1',count:'3',hours:'6'};s.tests='16/10/2026: PCR 8,5 mg/L';s.examAlterations='Temperatura 38,7 °C; FC 110 lpm';const n=feverNote(s);
+ for(const value of ['Fiebre de 2 días','Edad: 27 meses','3 vómitos en las últimas 24 horas','último vómito hace 6 horas','16/10/2026','8,5 mg/L','38,7 °C','110 lpm'])assert.ok(n.includes(value),value);
+});
+test('síntomas digestivos y dolor conservan datos; ausencia no genera cifras',()=>{
+ const s=newFever();s.symptoms.diarrhea={present:'si',days:'1',count:'0'};s.symptoms.pain={present:'si',days:'',location:'fosa ilíaca derecha'};
+ const n=feverNote(s);assert.match(n,/0 deposiciones/);assert.match(n,/localización: fosa ilíaca derecha/);assert.doesNotMatch(n,/vómitos|último vómito hace/);assert.match(n,/Duración de dolor no aportada/);
+});
+test('exploración escrita se conserva sin completar otros órganos ni FANT',()=>{
+ const s=newFever();s.ageMonths='8';s.examAlterations='AP: sibilancias bilaterales.';assert.equal(feverExam(s),'Exploración: AP: sibilancias bilaterales.');assert.doesNotMatch(feverNote(s),/FANT|sin soplos|Oídos normales|BEG/);
+ s.examAlterations='FANT. AP: BVB.';assert.match(feverExam(s),/FANT\. AP: BVB\./);
+});
+test('separación de antecedentes, pruebas, valoración y plan expresos',()=>{
+ const s=newFever();Object.assign(s,{relevantHistory:'Alergia a penicilina',tests:'Test estreptococo negativo',assessment:'Probable infección viral según valoración del pediatra',plan:'Revisión el 18/10/2026',adviceText:'Se explica volver antes si empeora',pending:'Informe previo no disponible'});
+ const n=feverNote(s);assert.match(n,/^Antecedentes relevantes: Alergia a penicilina\./m);assert.match(n,/^Pruebas: Test estreptococo negativo\./m);assert.match(n,/^Valoración del pediatra: Probable infección viral/m);assert.match(n,/^Plan: Revisión el 18\/10\/2026\. Se explica volver antes si empeora\./m);assert.match(n,/Informe previo no disponible/);
+});
+test('propuestas de consejo no son hechos ni se incorporan sin selección expresa',()=>{
+ const s=newFever();s.returnMode='extra2';assert.match(defaultAdvice(s),/48 horas/);assert.doesNotMatch(feverNote(s),/48 horas|Se explican/);
+ s.adviceText=defaultAdvice(s);assert.match(feverNote(s),/48 horas|Se explican/);
+});
+test('síntesis larga queda en 180 palabras, avisa y preserva fuente',()=>{
+ const s=newFever();s.extraHistory='Dato clínico extenso '.repeat(300);s.examAlterations='AP: BVB';s.assessment='Valoración clínica aportada';const original=s.extraHistory,r=feverSummary(s);
+ assert.ok(r.words<=180);assert.ok(r.omitted.length>0);assert.match(r.text,/Información adicional no incluida por extensión/);assert.match(r.text,/Exploración: AP: BVB/);assert.equal(s.extraHistory,original);
+});
+test('consejos orientativos mantienen avisos por edad y persistencia fuera de nota',()=>{
+ const s=newFever();s.returnMode='extra2';s.days='3';assert.match(defaultAdvice(s),/Reevaluar hoy/);s.ageMonths='2';assert.match(defaultAdvice(s),/valoración urgente/);assert.ok(feverWarnings(s).length>=2);assert.doesNotMatch(feverNote(s),/valoración urgente|Reevaluar hoy/);
+});
+test('valores dudosos se conservan para revisión y no se sustituyen por normales',()=>{const s=newFever();s.days='-1';s.symptoms.diarrhea={present:'si',days:'-2',count:'1.5'};assert.equal(feverWarnings(s).length,3);assert.equal(s.symptoms.diarrhea.count,'1.5');});

@@ -38,9 +38,9 @@ const fs=require('node:fs/promises');
  const preserved=await note();await page.locator('[data-mode="follow"]').click();assert.equal(await note(),preserved);
  assert.equal(await page.locator('[data-action="accept-proposal"]').isDisabled(),true);
  await click('generate');assert.match(await note(),/no revisadas/);assert.doesNotMatch(await note(),/no, confirmado/);
- await open('tolerance');await page.locator('[data-path="ramReviewed"]').check();await click('generate');assert.match(await note(),/Pérdida de apetito: no, confirmado/);
+ await open('tolerance');await page.locator('[data-path="ramReviewed"]').check();await click('generate');assert.match(await note(),/RAM revisadas, no referidas: pérdida de apetito/);
  await select('ram.appetite.present','true');assert.equal(await page.locator('[data-path="ramReviewed"]').isChecked(),false);
- await fill('ram.appetite.intensity','Leve');await fill('ram.appetite.onset','Mediodía');await page.locator('[data-path="ramReviewed"]').check();await click('generate');assert.match(await note(),/Pérdida de apetito: sí. Intensidad: Leve/);
+ await fill('ram.appetite.intensity','Leve');await fill('ram.appetite.onset','Mediodía');await page.locator('[data-path="ramReviewed"]').check();await click('generate');assert.match(await note(),/Pérdida de apetito: intensidad Leve/);
  await select('ram.appetite.present','false');await page.locator('[data-path="ramReviewed"]').check();
  // Ruta de propuesta completa y aceptación explícita.
  await open('session');await fill('birth','2018-01-01');await fill('date','2026-10-16');await select('sex','masculino');
@@ -56,9 +56,9 @@ const fs=require('node:fs/promises');
  const a11yFollow=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
  await fs.writeFile('test-results/accessibility-follow.json',JSON.stringify(a11yFollow.violations,null,2));
  assert.deepEqual(a11yFollow.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[]);
- await click('generate');assert.doesNotMatch(await note(),/Propuesta orientativa aceptada/);
- await click('accept-proposal');await click('generate');assert.match(await note(),/Propuesta orientativa aceptada/);
- await fill('follow.effectDuration','3 horas');assert.match(await page.locator('#proposal').innerText(),/He revisado los datos/);await click('generate');assert.doesNotMatch(await note(),/Propuesta orientativa aceptada/);
+ await click('generate');assert.doesNotMatch(await note(),/Opción aceptada por el profesional/);
+ await click('accept-proposal');await click('generate');assert.match(await note(),/Opción aceptada por el profesional/);
+ await fill('follow.effectDuration','3 horas');assert.match(await page.locator('#proposal').innerText(),/He revisado los datos/);await click('generate');assert.doesNotMatch(await note(),/Opción aceptada por el profesional/);
  // Exportación real e importación controlada, sin evolución ni RAM previas.
  const downloadPromise=page.waitForEvent('download');await click('export');const download=await downloadPromise;
  const exported=JSON.parse(await fs.readFile(await download.path(),'utf8'));assert.equal(exported.app,'consulta-pediatrica-local');assert.equal(exported.consultation.goals[0].baseline,'90 min');

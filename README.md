@@ -27,7 +27,7 @@ Cada tarea de nube está aislada: trabajar en este checkout, sin crear worktrees
 - Seguimiento: pauta previa, adherencia, respuesta por entornos, inicio/duración/cobertura, rebote, objetivos y RAM. «No» inicial en RAM no se lleva como negativa hasta confirmar revisión. Cambiar una RAM exige confirmar de nuevo.
 - Síntesis razonada separada del registro: apoyo, lagunas/discordancias, comorbilidad/alternativas y siguientes pasos. No probabilidad numérica ni diagnóstico automático. Solo entra en la valoración al aceptarla expresamente.
 - Propuestas cualitativas específicas de metilfenidato: justificación, regla, fuente, lagunas y precauciones. Bloqueadas ante datos indispensables ausentes o problemas que requieren valoración. Sin dosis, conversiones o equivalencias. Solo se incorporan al plan por aceptación explícita; los cambios posteriores invalidan esa aceptación.
-- Nota estructurada editable y copiable en texto sencillo, parcial si faltan datos. El formulario nunca la reescribe automáticamente. Regenerar una nota editada requiere confirmación; cancelar conserva los cambios. Si el portapapeles no está disponible, se selecciona el texto y se explica cómo copiarlo manualmente.
+- Síntesis final de máximo 180 palabras en ocho apartados, solo con datos aportados, editable y copiable en texto sencillo. Sin exploración escrita, «Exploración: no aportada». El formulario nunca la reescribe automáticamente. Regenerar una nota editada requiere confirmación; cancelar conserva los cambios. Si el portapapeles no está disponible, se selecciona el texto y se explica cómo copiarlo manualmente.
 - Exportación JSON explícita e importación selectiva de objetivos, tratamiento y mediciones. Se comprueba el mismo caso antes de trasladar. No se importan valoraciones, negativas, RAM revisadas ni evolución de objetivos.
 
 ## Privacidad
@@ -64,7 +64,7 @@ Resultados ejecutados y alcance: [VALIDACION.md](docs/VALIDACION.md).
 
 - `src/schema.js`: campos y estructura del estado; añadir nuevas patologías requiere su propio esquema y reglas.
 - `src/app.js` / `style.css`: interfaz, navegación, nota editable, acciones locales.
-- `src/clinical.js`: síntesis, propuestas y ensamblado de nota, con referencias por regla.
+- `src/clinical.js`: orientación y propuestas trazables; `src/note-summary.js`: síntesis final de ocho apartados y límite de palabras.
 - `src/questionnaires.js`: versiones y límites de puntuaciones introducidas. Sin puntuación por ítems ni clasificación.
 - `src/measurements.js`: IMC, comprobación de unidades/plausibilidad y comparación.
 - `src/percentiles.js`: edad, LMS y CDF; `who-data.js`: datos generados; `vendor/who/`: originales, hashes y licencia.
@@ -85,16 +85,18 @@ No hay backend, cuentas, multitenencia, sincronización ni historial persistente
 
 Correspondencia de las fuentes: [FUENTES.md](docs/FUENTES.md). Datos/métodos OMS: © World Health Organization, GPL ≥3; se conserva licencia y atribución en `vendor/who/`. Revisar sus términos antes de redistribuir. Esta aplicación no está avalada por la OMS, NICHQ ni AAP.
 
+## Síntesis final de la nota
+
+TDAH y Fiebre aplican las [reglas de síntesis aportadas por el usuario](docs/REGLAS_NOTA.md): máximo 180 palabras y ocho apartados, separados en hechos, valoración expresamente indicada y plan. No se completan síntomas negativos, hallazgos normales, diagnósticos, decisiones ni consejos ausentes. Las fechas, cifras y unidades de los datos incluidos se conservan. La síntesis es extractiva y local, sin IA externa.
+
+El contador indica la extensión. Si no cabe algún hecho, se avisa en «Información pendiente» y se mantiene íntegro en el formulario. Las ediciones manuales se conservan y no se recortan; si superan el límite hay que reducirlas antes de copiar. No se ofrece anonimización general de texto libre: introducir datos desidentificados.
+
 ## Pestaña Fiebre
 
-Diez síntomas en una cuadrícula compacta: catarrales, tos, dificultad respiratoria, diarrea, vómitos, dolor, odinofagia, exantema, molestias urinarias y otalgia. Todos son visibles sin desplazarse con valores iniciales en las ventanas comprobadas: 1440, 1024, 768 y 390 px de ancho por 900 px de alto. Al activar «Sí» aparecen duración y detalles específicos. El número de síntomas positivos, el tamaño de texto o ventanas menores pueden requerir desplazamiento.
+Diez síntomas en cuadrícula compacta. «—» significa no aportado; seleccionar «No» o «Sí» solo cuando se haya recogido el dato. «Sí» habilita duración y detalles: deposiciones/vómitos en 24 h, horas desde el último vómito o localización del dolor. No hay casillas de reconfirmación. Los diez síntomas iniciales caben sin desplazamiento en los tamaños comprobados (1440, 1024, 768 y 390 px de ancho por 900 px de alto); campos adicionales o ventanas más pequeñas pueden requerir desplazamiento.
 
-Un único cuadro de alteraciones físicas reconoce órganos y términos habituales mediante reglas locales (`src/fever-exam.js`), sin IA ni envío de datos. Ejemplo: «AP: sibilancias bilaterales. Tímpano derecho abombado» sustituye AP y oídos, conservando las otras frases normales. «Adenopatías laterocervicales» se incorpora como hallazgo adicional. Si cualquier frase queda sin asignar con seguridad, se conserva todo lo escrito y se omite la plantilla normal automática de toda la exploración; la interfaz lo explica. El reconocimiento no es una interpretación clínica general y exige revisar el resultado. FANT se añade solo con edad conocida <12 meses, y se sustituye si se describe una alteración de la fontanela.
+Un único cuadro recoge la exploración efectivamente realizada. **Vacío → «Exploración: no aportada»**, sin completar los otros órganos con normalidad y sin FANT automático. Esto sustituye el comportamiento previo de completar la plantilla normal. Antecedentes, pruebas, valoración y plan disponen de sus propios campos para evitar mezclarlos con la anamnesis.
 
-No hay casillas de reconfirmación en Fiebre: los «No», la plantilla normal y las recomendaciones se usan por defecto, según lo solicitado por el profesional. La nota consta de párrafos de anamnesis, exploración y recomendaciones. Duraciones, frecuencias y localización se integran en frases clínicas; se omiten datos no aportados sin sustituirlos por cifras o hallazgos inventados. Antes de copiar, comprobar que valores por defecto, exploración y consejos describen lo efectivamente recogido o explicado.
+Los consejos orientativos siguen visibles, pero no pasan automáticamente a la nota. Pueden escribirse los consejos realmente explicados o incorporarse expresamente el texto propuesto al registro. Los avisos por edad y persistencia ayudan a revisar el caso y no se convierten en decisiones clínicas documentadas sin indicación del profesional.
 
-Los consejos ocupan dos líneas lógicas y admiten plazo individualizado o sustitución completa del texto. Con ≥3 días de fiebre no se propone esperar automáticamente otros dos; en <3 meses con fiebre ≥38 °C se recuerda valoración urgente. No se decide el alta ni se ofrece garantía legal.
-
-Cambiar de pestaña conserva las dos consultas y notas en memoria, sin mezclarlas. Reiniciar fiebre borra solo esa consulta. Las ediciones manuales de la nota se conservan; reemplazarlas exige confirmación para evitar pérdidas (distinta de las casillas de revisión, que se han retirado).
-
-`src/fever.js` genera la redacción, `src/fever-app.js` presenta la interfaz y `src/fever-exam.js` asigna los hallazgos físicos. Pruebas: `tests/fever.test.js` y `tests/fever-browser.cjs`. Para ver las pruebas individuales en este entorno: `node --test --test-isolation=none tests/*.test.js` (Node 22+).
+Ambas consultas y notas se conservan por separado en memoria al navegar. Reiniciar fiebre borra solo esa consulta. Recargar o cerrar pierde los datos. `src/fever.js` prepara los datos de síntesis y `src/fever-app.js` presenta la interfaz. Pruebas: `tests/fever.test.js`, `tests/note-summary.test.js` y los recorridos Chromium. Para ver las pruebas individuales en este entorno: `node --test --test-isolation=none tests/*.test.js` (Node 22+).
