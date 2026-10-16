@@ -85,3 +85,7 @@ Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias tot
 ## Página independiente de Otitis · 17/10/2026
 
 Nueva prueba de navegador: acceso directo a otitis.html, un único apartado sin enlaces ni carga de módulos de TDAH/Fiebre, generación y copia con las mismas dosis, reinicio, ausencia de errores, accesibilidad y tres anchos. Verifica además que la navegación completa de la página principal se conserva. Sintaxis de 16 módulos; sin cambios en reglas clínicas.
+
+## Cartilla vacunal · 17/10/2026
+
+14 pruebas nuevas, 118 unitarias totales; sintaxis de 20 módulos. Nuevo recorrido de navegador para texto/combos, fechas y edades, revisión, anomalías, reporte/copia, conservación entre módulos, formato de foto rechazado, cancelación y OCR real de una imagen sintética. Comprueba ausencia de peticiones a terceros, POST, localStorage, sessionStorage o IndexedDB, sin violaciones CSP, entrada HTML sin ejecución, accesibilidad y cuatro anchos. La comparación AEP/Madrid y las vacunas pendientes NO están evaluadas ni implementadas como recomendador: fuentes oficiales pendientes por HTTP 403, según CARTILLA_VACUNAL.md.
