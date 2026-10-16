@@ -1,4 +1,4 @@
-import {buildSummary} from './note-summary.js';
+import {clinicalText,wordCount,NOTE_LIMIT} from './note-summary.js';
 export const OTALGIA_SIGNS=[['discharge','Otorrea'],['fever','Fiebre'],['cold','Síntomas catarrales'],['antibiotic','Antibiótico en los últimos 7 días'],['recurrent','Otitis de repetición'],['pool','Acude a piscina']];
 export const INFANT_SIGNS=[['irritable','Irritabilidad'],['feeding','Rechazo de tomas'],['sleep','Sueño interrumpido'],['head','Autogolpes sobre el cráneo']];
 export const EAR_SIGNS=[['tragus','Trago positivo'],['canal','CAE eritematoso'],['edema','CAE edematoso'],['discharge','Otorrea'],['red','Tímpano hiperémico no abombado'],['bulging','Tímpano hiperémico y abombado']];
@@ -57,7 +57,7 @@ export function otalgiaProposal(s){
    else warnings.push('Alergia seleccionada: precisar tipo antes de calcular alternativa.');return;
   }
   const d=oralDose(s.weight,clav);if(!d)return;
-  plan.push(`${conditional?'Si no mejora en el plazo indicado, iniciar':'Iniciar'} ${clav?'amoxicilina-clavulánico':'amoxicilina'} ${d.concentration} mg/mL: ${fmt(d.ml)} mL (${fmt(d.ml*d.concentration)} mg de amoxicilina) por vía oral cada 8 h durante ${days} días${clav?'; verificar proporción de clavulanato de la presentación':''}.`);
+  plan.push(`${conditional?'Si no mejora en el plazo indicado, iniciar':'Iniciar'} ${clav?'amoxicilina-clavulánico 100/12,5 mg/mL':'amoxicilina 250 mg/5 mL'}: ${fmt(d.ml)} mL (${fmt(d.ml*d.concentration)} mg de amoxicilina) por vía oral cada 8 h durante ${days} días.`);
  };
  const prior=s.antibioticName.toLowerCase(),priorClav=/clav|augment|clav[uú]/.test(prior),priorAmox=/amox|amoxi/.test(prior);
  if(oma&&!urgent&&!mixed&&age!==null){
@@ -88,14 +88,43 @@ export function otalgiaProposal(s){
  if(!oma&&!oe&&!urgent&&!special)plan.push('Completar valoración clínica antes de establecer tratamiento etiológico.');
  return {diagnoses,plan,warnings,urgent,evidence};
 }
+const joinClinical=values=>values.length<2?(values[0]||''):values.slice(0,-1).join(', ')+' y '+values.at(-1);
+const durationText=value=>`${value} ${Number(value)===1?'día':'días'}`;
+const sentence=value=>/[.!?]$/u.test(value)?value:value+'.';
 export function otalgiaSummary(s){
- const g=Array.from({length:8},()=>[]),add=(i,text,priority=60)=>{if(text)g[i].push({text,priority});},age=ageMonths(s),p=otalgiaProposal(s);
- add(0,s.side?'Otalgia '+({right:'derecha',left:'izquierda',bilateral:'bilateral'}[s.side]):'Consulta por molestias óticas',90);
- add(1,[age!==null?`Edad ${age<24?age+' meses':s.years+' años'}`:'',positive(s.weight)?`peso ${s.weight} kg`:'',s.days?`evolución de ${s.days} ${Number(s.days)===1?'día':'días'}`:''].filter(Boolean).join('; '),100);
- if(s.pain)add(1,s.pain==='si'?'Refiere otalgia':'No refiere otalgia');
- for(const [k,label] of [...OTALGIA_SIGNS,...INFANT_SIGNS]){if(!s.signs[k]||(INFANT_SIGNS.some(([id])=>id===k)&&(age===null||age>=24)))continue;let text=label;if(k==='fever')text+=[s.temperature?`máxima ${s.temperature} °C`:'',s.feverDays?`${s.feverDays} días`:''].filter(Boolean).map(t=>', '+t).join('');if(k==='cold'&&s.coldDays)text+=`, ${s.coldDays} días`;if(k==='antibiotic')text+=`: ${s.antibioticName||'sin especificar'}${s.antibioticDose?', '+s.antibioticDose:''}`;if(k==='recurrent')text+=`${s.episodes12?`, ${s.episodes12} episodios/12 meses`:''}${s.episodes6?`, ${s.episodes6} episodios/6 meses`:''}`;add(1,text,75);}
- if(s.analgesia48)add(1,'Persistencia de síntomas pese a ≥48 h de analgesia/antitérmicos',145);
- for(const [k,label] of [['right','OD'],['left','OI']]){const e=s[k];if(!e.status)continue;const parts=e.status==='normal'?['trago negativo, CAE y tímpano normales']:EAR_SIGNS.filter(([id])=>e[id]&&!(e.status==='unseen'&&['red','bulging'].includes(id))).map(([,t])=>t.toLowerCase());if(e.status==='unseen')parts.push('tímpano no visualizado');add(3,label+': '+(parts.join('; ')||'exploración anormal sin detallar'),140);}
- for(const [k,label] of RISKS)if(s.risks[k])add(2,k==='allergy'?`Alergia a amoxicilina/penicilinas${s.allergyMild?' no inmediata leve':s.allergySevere?' IgE mediada o retardada grave':', tipo no precisado'}`:label,['mastoid','unwell','allergy','severeImmune','recentImplant'].includes(k)?155:100);
- p.diagnoses.forEach(t=>add(5,t,150));p.plan.forEach(t=>add(6,t,/mL|cefuroxima|claritromicina|ceftriaxona|hospitalaria prioritaria|tratamiento individualizado/.test(t)?165:/Observación|sin repetir|Revisión/.test(t)?148:125));p.warnings.forEach(t=>add(7,t,145));return {...buildSummary(g),proposal:p};
+ const p=otalgiaProposal(s),age=ageMonths(s),items=[];let quarantined=false;
+ const add=(section,text,priority=80)=>{if(!text)return;const clean=clinicalText(text);quarantined||=clean.quarantined;if(clean.text)items.push({section,text:sentence(clean.text),priority,index:items.length});};
+ const location={right:'derecha',left:'izquierda',bilateral:'bilateral'}[s.side];
+ add('history',`Consulta por ${s.pain==='no'?'molestias óticas':'otalgia'}${location?' '+location:''}${positive(s.days)?' de '+durationText(s.days)+' de evolución':''}`,130);
+ const symptoms=[];
+ if(s.signs.fever)symptoms.push(`fiebre${s.feverDays?' de '+durationText(s.feverDays)+' de evolución':''}${s.temperature?' (temperatura máxima de '+s.temperature+' °C)':''}`);
+ if(s.signs.cold)symptoms.push('síntomas catarrales'+(s.coldDays?' de '+durationText(s.coldDays)+' de evolución':''));
+ if(s.signs.discharge)symptoms.push('otorrea');
+ if(age!==null&&age<24){for(const [k,text] of [['irritable','irritabilidad'],['feeding','rechazo de tomas'],['sleep','sueño interrumpido'],['head','autogolpes sobre el cráneo']])if(s.signs[k])symptoms.push(text);}
+ if(symptoms.length)add('history','Asocia '+joinClinical(symptoms),110);
+ if(s.signs.pool)add('history','Acude a piscina',65);
+ if(s.signs.antibiotic)add('history',`Ha recibido ${s.antibioticName||'antibiótico no especificado'} en los últimos 7 días${s.antibioticDose?', con pauta de '+s.antibioticDose:''}`,115);
+ if(s.signs.recurrent)add('history','Antecedente de otitis de repetición'+(s.episodes12||s.episodes6?' ('+[s.episodes12?s.episodes12+' episodios en 12 meses':'',s.episodes6?s.episodes6+' en 6 meses':''].filter(Boolean).join('; ')+')':''),95);
+ for(const [k,label] of RISKS){if(!s.risks[k])continue;let text=label;if(k==='allergy')text='Alergia a amoxicilina/penicilinas'+(s.allergyMild?' con reacción no inmediata leve':s.allergySevere?' con reacción IgE mediada o retardada grave':' de tipo no precisado');add('history',text,['allergy','mastoid','unwell','severeImmune','recentImplant'].includes(k)?150:90);}
+ for(const [k,label] of [['right','Oído derecho'],['left','Oído izquierdo']]){const e=s[k];if(!e.status)continue;let parts=e.status==='normal'?['trago negativo','CAE y tímpano normales']:EAR_SIGNS.filter(([id])=>e[id]&&!(e.status==='unseen'&&['red','bulging'].includes(id))).map(([,t])=>t.toLowerCase());if(e.status==='unseen')parts.push('tímpano no visualizado');add('exam',label+': '+(parts.join('; ')||'exploración anormal sin detallar'),140);}
+ if(!s.right.status&&!s.left.status)add('exam','no aportada',80);
+ const clinicalLabels={oma:'Otitis media aguda',omaRisk:'Otitis media aguda probable',probable:'Otitis media aguda probable',oe:'Otitis externa',mixed:'Posible otitis media aguda y externa concomitantes'};
+ const diagnoses=p.evidence.filter(e=>clinicalLabels[e.kind]);
+ if(diagnoses.length===2&&diagnoses[0].kind===diagnoses[1].kind)add('assessment',clinicalLabels[diagnoses[0].kind]+' bilateral',155);
+ else diagnoses.forEach(e=>add('assessment',clinicalLabels[e.kind]+' '+sideLabel(e),155));
+ if(!diagnoses.length)add('assessment','Otalgia de etiología no establecida',100);
+ for(let text of p.plan){
+  // El tiempo previo afecta a la decisión terapéutica, pero no añade relato ni analgesia a la nota.
+  if(/^(Analgesia oral|Sin mejoría tras ≥48 h con analgesia|Observación con analgesia)/u.test(text))continue;
+  text=text.replace('Si no mejora en el plazo indicado, iniciar','Si no mejora al completar 48–72 h de evolución, iniciar').replace(/^Iniciar /u,'');
+  text=text.replace(/ mL \([^)]*mg de amoxicilina\)/u,' mL');
+  text=text.charAt(0).toUpperCase()+text.slice(1);
+  add('plan',text,/mL|cefuroxima|claritromicina|ceftriaxona|hospitalaria prioritaria|Tratamiento individualizado/.test(text)?170:/Revisión/.test(text)?135:100);
+ }
+ if(s.risks.allergy&&!s.allergyMild&&!s.allergySevere&&p.warnings.some(t=>t.startsWith('Alergia seleccionada')))add('plan','Tratamiento antibiótico pendiente de caracterizar la alergia',165);
+ // No se imprimen apartados vacíos ni avisos de datos ausentes en el texto para el historial.
+ const selected=[],omitted=[];
+ const render=()=>['history','exam','assessment','plan'].map(section=>{const body=selected.filter(x=>x.section===section).sort((a,b)=>a.index-b.index).map(x=>x.text).join(' ');return body?({history:'',exam:'Exploración: ',assessment:'Juicio clínico: ',plan:'Plan: '}[section])+body:'';}).filter(Boolean).join('\n\n');
+ for(const item of items.slice().sort((a,b)=>b.priority-a.priority||a.index-b.index)){selected.push(item);if(wordCount(render())>NOTE_LIMIT){selected.pop();omitted.push({section:item.section,text:item.text});}}
+ const text=render();return {text,words:wordCount(text),omitted,quarantined,proposal:p};
 }
