@@ -40,3 +40,5 @@ No se añaden criterios diagnósticos, umbrales de escalas ni circuitos locales.
 ### Otalgia
 
 Capítulo 130 «Otitis media aguda y otitis externa. Complicaciones», M. García Boyano y F. Baquero Artigao, pp. 1591–1596, imágenes aportadas por el usuario (edición completa no especificada). Sustituye las indicaciones textuales iniciales donde difieren. Concentraciones de amoxicilina 50 mg/mL y combinación 100 mg/mL indicadas por el usuario. Reglas, límites y decisiones de implementación: [OTALGIA.md](OTALGIA.md).
+
+Identificación de la obra aportada por el usuario el 17/10/2026: **LIBRO VERDE: Manual de Diagnóstico y Terapéutica en Pediatría, 7ª edición**. La implementación incluye ajustes posteriores expresos del usuario sobre gravedad, recurrencia, otorrea y duraciones; véase OTALGIA.md. Cetraxal Plus frasco multidosis fue confirmado por el usuario; el intento de consulta de su ficha en CIMA devolvió HTTP 403 y no se considera una verificación online completada.

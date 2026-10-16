@@ -1,64 +1,72 @@
-# Otalgia · formulario simplificado
+# Otalgia
 
-## Fuente y alcance
+Página local de anamnesis, exploración OD/OI y borrador de nota de Atención Primaria. No guarda ni envía datos. Encabezado solicitado: «Basado en el LIBRO VERDE: Manual de Diagnóstico y Terapéutica en Pediatría, 7ª edición».
 
-Referencia principal: imágenes facilitadas por el usuario del capítulo 130, «Otitis media aguda y otitis externa. Complicaciones», M. García Boyano y F. Baquero Artigao, páginas 1591–1596. No consta la edición completa. Sustituyen las reglas del primer texto del usuario donde difieren. Se consideran también sus cambios de interfaz y concentraciones del 16/10/2026.
+## Fuentes y adaptación
 
-La nota breve de Atención Primaria, de hasta 180 palabras, se genera directamente con anamnesis, exploración, diagnóstico orientado por reglas y tratamiento. Se ha retirado el paso de incorporación de propuestas a petición expresa del pediatra. El resultado es un borrador para revisión profesional, no una prescripción enviada ni un diagnóstico validado externamente. No modifica el funcionamiento de Fiebre ni TDAH. No se envían ni guardan los datos.
+El usuario aportó imágenes del capítulo 130 «Otitis media aguda y otitis externa. Complicaciones», M. García Boyano y F. Baquero Artigao, pp. 1591–1596, y posteriormente identificó la obra como el Libro Verde, 7ª edición. Las reglas finales incorporan sus ajustes expresos del 17/10/2026; no se afirma que sean una transcripción literal ni una validación independiente de la guía. En particular, los ajustes posteriores sobre OMA grave, otorrea aislada, recurrencia y duraciones sustituyen las reglas previas de la aplicación.
 
-## Interfaz
+## Recogida de datos
 
-Anamnesis, exploración independiente OD/OI y antecedentes seleccionables. Retirados texto libre de otros datos, integridad timpánica, descarte explícito de OE, motivo de no visualización, otros hallazgos, selector de alergia negada, otros antecedentes, pruebas y panel de orientación/referencias/plan editable. Un solo botón bajo los antecedentes genera la nota; el texto final sigue siendo editable y copiable.
+Edad/peso para decisiones y cálculos, lateralidad, duración, síntomas, datos de antibiótico previo, exploración por oído y antecedentes seleccionables. Edad en meses totales enteros y coherentes si <2 años. Los síntomas marcados se redactan como presentes y los no marcados como ausentes: el formulario explica esta semántica. Los cuatro síntomas del lactante solo se usan en <2 años. Los negativos se unen con «ni». Antecedentes y exploración sin seleccionar no se convierten en negativos.
 
-La alergia se marca solo cuando existe. Solo entonces se muestran dos casillas excluyentes: no inmediata leve; IgE mediada o retardada grave. Sin tipo caracterizado no se calcula alternativa. No marcar alergia permite calcular la opción habitual sin escribir una negativa clínica en la nota. Las casillas de antecedentes no marcadas no generan negativos. Desde la última revisión, las de síntomas no marcadas significan ausencia, tal como se explica junto al formulario.
+La recurrencia aparece una sola vez en antecedentes: ≥3 episodios/6 meses o ≥4/12 meses, sin exigir un episodio adicional en los últimos 6 meses. Marcarla declara el antecedente y activa el riesgo; las cifras opcionales no bloquean el tratamiento. Si son contradictorias se avisa para revisión.
 
-Una casilla registra «≥48 horas con analgesia/antitérmicos sin mejoría». Se considera observación ya cumplida; no se indican otras 48 horas antes del antibiótico. Una evolución ≥2 días tampoco reinicia la conducta expectante descrita para otalgia <48 h en la fuente. La mala evolución tras antibiótico se recoge por separado y activa el manejo de fracaso terapéutico.
+Se mantiene una sola casilla de inmunosupresión, con gravedad al seleccionarla. Alergia solo positiva; permite distinguir reacción no inmediata leve de IgE mediada/retardada grave. No se escriben negativas implícitas de antecedentes. Se ha recuperado amoxicilina en el último mes. No se han recuperado las casillas retiradas de vacunación incompleta, afectación general ni mastoiditis: retirarlas no equivale a descartar esas situaciones.
 
-## Diagnóstico y reglas
+## Diagnóstico
 
-- OMA confirmada: clínica compatible (otalgia o equivalentes del lactante en el lado referido), inflamación y derrame. El hallazgo «tímpano hiperémico y abombado» recoge los dos últimos criterios. Una hiperemia aislada no confirma OMA.
-- OMA probable: criterios incompletos compatibles, incluida otoscopia no disponible con clínica/catarro/fiebre. Otorrea aislada sin clínica/inflamación completas no se etiqueta confirmada. La probable con catarro y <6 meses, recurrencia o antecedentes familiares se equipara a confirmada únicamente a efectos terapéuticos, conservando «probable» en el texto.
-- OE: CAE eritematoso con edema o trago positivo. Trago aislado no confirma OE, especialmente en lactantes. Coincidencia con abombamiento: posible afectación mixta que requiere valoración individual.
-- Recurrencia: ≥3 episodios/6 meses, o ≥4/12 meses con ≥1/6 meses. Marcar «otitis de repetición» expresa el antecedente establecido por el profesional y activa el factor de riesgo aunque no se rellenen las cifras; estas sirven para documentar y contrastar el antecedente sin bloquear el tratamiento.
+- Otalgia o equivalentes del lactante más tímpano hiperémico y abombado → OMA confirmada.
+- Otorrea aislada → OMA confirmada cuando no hay hallazgos que orienten a OE. La otorrea anamnéstica se atribuye al lado registrado; si no hay lateralidad ni hallazgo por oído no se inventa una localización. Una exploración explícitamente normal mantiene prioridad frente a una anamnesis discordante; debe revisarse la coherencia clínica.
+- CAE eritematoso con edema/trago o edema importante con dolor → compatible con OE. Trago aislado no basta. OE y abombamiento simultáneos → posible cuadro mixto, con valoración individualizada.
+- Criterios incompletos compatibles → OMA probable, conservando el matiz en el juicio clínico. Catarro con factores definidos en la fuente puede equiparar la probable a confirmada solo a efectos terapéuticos.
 
-## Tratamiento y cálculo
+La síntesis no escribe «no presenta otorrea» si esta consta en la exploración aunque no se haya marcado en anamnesis. «CAE» conserva siempre mayúsculas. El tímpano no visualizado no aporta hiperemia ni abombamiento residual.
 
-Se utiliza 80 mg/kg/día de amoxicilina, extremo inferior del intervalo 80–90 de la tabla 130-1, dividido en tres tomas cada 8 h, máximo 3 g/día tanto para amoxicilina como para el componente amoxicilina de la combinación. Concentraciones solicitadas: amoxicilina 50 mg/mL; amoxicilina-clavulánico 100 mg/mL de amoxicilina. Volumen = dosis diaria / 3 / concentración. Se redondea a dos decimales, descendiendo si el redondeo excedería el máximo diario. La nota muestra presentación, volumen, intervalo y duración. Presentaciones indicadas en la última revisión: amoxicilina 250 mg/5 mL (equivalente a 50 mg/mL) y amoxicilina-clavulánico 100/12,5 mg/mL. El componente amoxicilina de la combinación sigue siendo 100 mg/mL; no cambia el cálculo. «250 gramos» se interpreta como error de dictado y se corrige a 250 mg/5 mL.
+## Decisiones de tratamiento
 
-Amoxicilina-clavulánico si <6 meses, gravedad en <2 años, recurrencia, factores de riesgo o conjuntivitis purulenta. Antibiótico inicial si <2 años, gravedad, factores de riesgo o mala evolución previa; en los demás casos <48 h, conducta expectante y pauta condicionada a no mejoría. La fuente permite observación en ciertos niños de 6–24 meses: se ha elegido la opción de antibiótico inicial de la misma fuente, sin afirmar que sea la única válida.
+La observación inicial es de **48 h**; el periodo ya cumplido con analgesia sin mejoría cuenta, no se reinicia. El plazo de fracaso de antibiótico sigue siendo 48–72 h: no es una segunda observación previa al tratamiento.
 
-Duración: 10 días si <6 meses, gravedad, recurrencia/riesgo; 7 días entre 6–24 meses sin esos factores (extremo inferior de 7–10); 5 días desde los 2 años sin gravedad ni factores de riesgo (menor duración del intervalo de 5–7 días). La persistencia ≤7 días tras finalizar tratamiento requiere identificar el tratamiento previamente eficaz y revisión individualizada para 2–3 semanas, sin adivinar el fármaco.
+OMA con <2 años, gravedad, factores de riesgo o evolución sin mejoría suficiente → antibiótico inicial. Si no hay esos criterios y la evolución es <48 h, se propone pauta diferida condicionada a no mejoría tras 48 h de observación.
 
-Alergia no inmediata leve: cefuroxima-axetilo 30 mg/kg/día, cada 12 h, máximo 1 g/día, conforme a la tabla aportada. IgE mediada/retardada grave: opción claritromicina 15 mg/kg/día, cada 12 h, máximo 1 g/día; comprobar adecuación/interacciones. No se calculan mL de estas alternativas sin concentración especificada. Fracaso de amoxicilina: combinación; fracaso de combinación o intolerancia oral: opción ceftriaxona 50 mg/kg cada 24 h, máximo 1 g/día, 3 días, con reevaluación; no se automatiza ceftriaxona ante alergia grave/no caracterizada.
+Amoxicilina habitual. Amoxicilina-clavulánico si <6 meses, recurrencia, otros factores de riesgo, conjuntivitis purulenta o amoxicilina en el último mes. La gravedad en <2 años **por sí sola no cambia** amoxicilina por la combinación; otra indicación independiente sí puede hacerlo.
 
-OE o tubos con otorrea: opción de ciprofloxacino monodosis Baycip/Septocipro ótico cada 12 h, 7 días, dentro del intervalo de 7–10 de la fuente y sujeto a verificar presentación. Se evita neomicina dado que ya no se recoge integridad timpánica. Se mantiene analgesia según edad, peso y contraindicaciones; no se inventan una dosis analgésica, una formulación no definida ni la ausencia de contraindicaciones.
+| Situación | Duración de la pauta oral inicial |
+|---|---|
+| <6 meses | 10 días |
+| 6–<24 meses, sin gravedad/riesgo | 7 días |
+| <24 meses con gravedad o recurrencia | 10 días |
+| Desde 24 meses, sin gravedad ni riesgo | 5 días |
+| Desde 24 meses, OMA grave (bilateral, otalgia intensa, fiebre >39 °C u otorrea), sin otro criterio de 10 | 7 días |
+| Desde 24 meses, recurrente, sin otro criterio de 10 | **7–10 días**, intervalo expresamente solicitado |
+| Antecedentes familiares de secuelas, hipoacusia previa, anomalía craneofacial, inmunosupresión u otro criterio específico de 10 | 10 días |
 
-Neonatos <1 mes o implante reciente/con malformación/fístula: valoración hospitalaria prioritaria. La inmunosupresión se recoge en una sola casilla con gravedad especificable: grave lleva a valoración hospitalaria; no grave con OMA lleva a antibiótico inicial con amoxicilina-clavulánico y 10 días, salvo excepciones o contraindicaciones que cambien el manejo. Si no se indica gravedad, no se asume que permita tratamiento ambulatorio. Implante, afectación mixta o rescate sin fármaco previo: individualizar. Se han retirado las casillas específicas de afectación del estado general y sospecha de mastoiditis/complicación a petición del usuario; la retirada de esas casillas no equivale a descartar esas situaciones. No se generan pautas hospitalarias, quinolonas sistémicas ni linezolid. La fuente y el formulario no bastan para evaluar todas las contraindicaciones o ajustar por función renal/hepática: revisión profesional del borrador siempre necesaria.
+Para el umbral de 2 años se usa la separación <24 / ≥24 meses. La indicación de 10 días independiente prevalece sobre gravedad o recurrencia. La OMA persistente y el rescate tienen sus reglas propias, no se acortan con la tabla inicial.
 
-## Validación técnica
+Inmunosupresión no grave con OMA → antibiótico inicial de riesgo, combinación y 10 días salvo contraindicación/otra rama específica. Grave → valoración hospitalaria prioritaria. Gravedad desconocida → precisar antes de asumir tratamiento ambulatorio. Implante reciente/con malformación/fístula y neonato <1 mes también priorizan valoración hospitalaria; implante sin caracterizar requiere coordinación con ORL.
 
-29 pruebas unitarias específicas, 99 totales: criterios diagnósticos, recurrencia con episodio reciente, umbrales de edad/gravedad, duraciones, dos concentraciones, máximos y redondeo, observación previa cumplida, alergias opcionales, fracaso, tópicos, señales de ingreso y extensión de nota. Chromium comprueba campos retirados, un solo botón de generación, tratamiento automático, cambios en peso/concentración/alergia, copia/edición/navegación/reinicio, accesibilidad WCAG A/AA y cuatro anchos. Estos controles técnicos no equivalen a validación médica.
+## Antibiótico previo y excepciones
 
-## Redacción de la nota · revisión posterior
+Selector cuando hay exposición reciente, fracaso o persistencia: amoxicilina, combinación, cefuroxima, claritromicina, azitromicina, ceftriaxona u otro. «Otro» permite nombre libre sin interpretar coincidencias textuales como una pauta de rescate. Se conserva la pauta recibida.
 
-Texto inicial sin encabezado: «Consulta por otalgia [localización] de [duración] de evolución». Los síntomas se unen en una frase clínica y solo se incluyen los presentes. Los antecedentes seleccionados se incorporan al relato sin un apartado vacío ni una negación implícita. No se imprimen edad, peso, analgesia oral ni el periodo previo con analgesia; siguen disponibles para decidir y calcular tratamiento. Después: «Exploración», «Juicio clínico» y «Plan» solo cuando procede. Sin pruebas ni información pendiente vacía. Se mantiene «Exploración: no aportada» cuando no hay exploración registrada; no se inventa normalidad.
+Fracaso de amoxicilina → combinación durante 10 días; de combinación → opción ceftriaxona 50 mg/kg cada 24 h, máximo 1 g/día, 3 días; de ceftriaxona → ORL/timpanocentesis/cultivo. Otras alternativas, alergia grave o tratamiento no caracterizado → reevaluación individualizada. Intolerancia oral → considerar ceftriaxona, respetando alergias y contexto. Exposición reciente sin fracaso documentado no genera cambio automático. OMA persistente requiere identificar el tratamiento previamente eficaz para el manejo de 2–3 semanas descrito en la fuente.
 
-El plan empieza por la pauta antibiótica si se plantea y conserva su carácter diferido cuando procede, además de las indicaciones efectivas de seguimiento o valoración prioritaria. Se omiten frases de implementación como «sin repetir observación» y la recomendación genérica de analgesia. No se afirma que se hayan dado consejos o realizado actuaciones. Los avisos de datos incompletos y de omisión por extensión se muestran fuera de la nota; la ausencia de avisos en el texto para el historial no implica que se haya podido calcular una pauta. Las omisiones respetan frases completas, dan prioridad a dosis/urgencia y no cortan unidades ni cifras. TDAH y Fiebre mantienen sus formatos previos.
+Alergia no inmediata leve: opción cefuroxima-axetilo 30 mg/kg/día en dos tomas, máximo 1 g/día. IgE mediada/retardada grave: opción claritromicina 15 mg/kg/día en dos tomas, máximo 1 g/día, pendiente de comprobar adecuación e interacciones. No se calculan mL sin concentración indicada.
 
-## Antecedentes y tratamiento previo · última revisión
+## Cálculos y gotas
 
-«Otitis de repetición» aparece una sola vez, en antecedentes, y sustituye a «OMA recidivante». Sus cifras de episodios se muestran allí al marcarla; no se confunde repetición con recidiva >7 días. Retiradas las opciones de amoxicilina en el último mes, vacunación incompleta, sospecha de mastoiditis/complicación, afectación del estado general e inmunodepresión grave separada. Las reglas no consultan claves retiradas.
+Amoxicilina 80 mg/kg/día divididos cada 8 h, máximo 3 g/día (también para el componente amoxicilina de la combinación). Presentaciones solicitadas: 250 mg/5 mL y 100/12,5 mg/mL. El volumen se redondea a dos decimales sin exceder el máximo. La nota muestra mL, mg por toma y mg/kg/día tras limitar dosis. En la combinación, los mg siguen el orden amoxicilina/clavulanato. No se suman principios activos de distinta función como una única dosis.
 
-Selector de antibiótico previo cuando consta antibiótico reciente, fracaso o persistencia: amoxicilina, combinación, cefuroxima, claritromicina, azitromicina, ceftriaxona u otro. «Otro» permite especificar nombre, sin usar coincidencias textuales para inferir una pauta de rescate. Se conserva campo para la pauta recibida. Fracaso de amoxicilina → combinación; de combinación → opción ceftriaxona; de ceftriaxona → ORL/timpanocentesis/cultivo. Otras alternativas o fármaco desconocido → reevaluación y tratamiento individualizado. Exposición reciente sin fracaso documentado no provoca un cambio automático: se pide comprobar pauta, duración y respuesta.
+- Otorrea con tubos: ciprofloxacino ótico, **1 envase monodosis cada 12 h durante 7 días**, sin pauta oral estándar añadida. La alergia a penicilina no bloquea esta rama tópica.
+- OE sin edema importante: misma pauta de ciprofloxacino monodosis.
+- OE con edema importante: ciprofloxacino/fluocinolona 3/0,25 mg/mL, **Cetraxal Plus en frasco multidosis**, presentación confirmada por el usuario. Pauta registrada: 6–8 gotas cada 12 h durante 7 días desde los 6 meses. Si la edad falta o es <6 meses se individualiza, sin generar esa pauta.
 
-Todas las pautas sistémicas calculadas añaden entre paréntesis mg/kg/día; la cifra refleja la dosis diaria calculada tras aplicar el máximo, no una cifra nominal incompatible con este. Por ejemplo, el máximo de amoxicilina de 3 g/día para 80 kg corresponde a 37,5 mg/kg/día. Se conserva el pequeño redondeo del volumen a dos decimales. Para combinación se refiere al componente amoxicilina. Las pautas óticas tópicas mantienen sus unidades propias (monodosis); no se inventa una equivalencia mg/kg/día.
+Cetraxal sin «Plus» no identifica la combinación con corticoide. Se intentó consultar CIMA el 17/10/2026, pero devolvió HTTP 403; no se pudo contrastar online la ficha técnica desde este entorno. La pauta requiere revisión profesional, como las demás propuestas. Los cálculos y pruebas técnicas no constituyen validación farmacológica.
 
-## Ajustes de recurrencia, inmunosupresión y redacción · última revisión
+Se conserva mantener el CAE seco, evitar piscina y revisión si no mejora en 48 h o antes si empeora. Se omiten las marcas de la monodosis simple, «confirmar presentación», objetos y posición/tiempo de aplicación. La analgesia genérica no se imprime en la nota.
 
-La casilla de otitis de repetición activa por sí misma el riesgo: en OMA inicial lleva a amoxicilina-clavulánico de entrada durante 10 días, sin exigir cifras de episodios para tratarlo como antecedente. Las cifras discordantes generan aviso, sin desactivar el riesgo. Se mantienen las excepciones de alergia, vía oral, tubos, fracaso previo y criterios de ingreso. La inmunosupresión no grave sigue el manejo de OMA con factores de riesgo; la grave, el criterio de ingreso de la tabla 130-2. La gravedad desconocida requiere precisarla y no equivale a enfermedad leve.
+## Nota y validación
 
-La nota incluye ausencia de fiebre, síntomas catarrales y otorrea cuando no se marcan. Solo en <2 años añade los negativos de irritabilidad, rechazo de tomas, sueño interrumpido y autogolpes. No convierte antecedentes o hallazgos no seleccionados en negativos. El formulario explica esta semántica al profesional. Las casillas ocultas por edad no generan síntomas negativos fuera de su grupo de edad.
+«Consulta por… de… de evolución», síntomas y antecedentes presentes; después exploración, juicio clínico y plan. Sin edad/peso, apartados vacíos, pruebas no aportadas ni relato de las 48 h previas con analgesia. Sin exploración se escribe «Exploración: no aportada». Máximo 180 palabras; los avisos de omisión o datos incompletos se muestran fuera de la nota, sin cortar cifras/unidades ni frases. El formulario completo sigue disponible y las ediciones manuales no se sobrescriben sin confirmación.
 
-La pauta oral conserva mL y añade sus mg por toma entre paréntesis, además de mg/kg/día. Para combinación, el par de mg sigue el orden amoxicilina/clavulanato de la concentración (100/12,5 mg/mL). Así, 5,33 mL son 533/66,63 mg por toma tras redondear. «CAE» se conserva siempre en mayúscula.
-
-El ciprofloxacino ótico se escribe sin nombres comerciales ni «confirmar presentación»: 1 monodosis cada 12 h durante 7 días. Se conserva mantener el CAE seco y evitar piscina; se retiran las instrucciones sobre introducir objetos y posición/tiempo de aplicación de gotas. Se mantiene seguimiento y reconsulta por empeoramiento.
+34 pruebas unitarias específicas, 104 totales, más Chromium: matriz de edad/gravedad/recurrencia y precedencia de 10 días, exposición a amoxicilina, 48 h, diagnóstico por otorrea, tubos, edema importante, presentación multidosis, negativos, cálculo, alergias, rescate, interfaz, copia/edición/navegación/reinicio, accesibilidad y cuatro anchos. TDAH y Fiebre conservan sus reglas y formatos.

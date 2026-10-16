@@ -77,3 +77,7 @@ Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias tot
 ## Recurrencia, duraciones, inmunosupresión y salida · 16/10/2026
 
 29 pruebas de Otalgia, 99 totales. Nuevos casos: recurrencia marcada sin cifras → combinación inmediata y 10 días; menor intervalo de 5–7 días → 5; inmunosupresión no grave vs grave/desconocida; negativos de síntomas según edad; CAE en mayúscula; pauta ótica sin marcas ni instrucciones retiradas; mg por toma junto al volumen. La prueba de navegador verifica los mismos cambios y los recorridos previos de edición, copia, cambio de página, accesibilidad y móvil.
+
+## Matriz de manejo y presentación · 17/10/2026
+
+34 pruebas de Otalgia, 104 totales. Gravedad ≥2 años: 7 días; recurrencia: 7–10 salvo criterio independiente de 10; gravedad <2 años no cambia por sí sola a combinación. Amoxicilina último mes, observación 48 h, unión negativa con «ni», otorrea aislada confirmada sin hallazgos de OE, tubos con un envase tópico y OE con edema importante/Cetraxal Plus multidosis. Chromium valida cabecera, campos, ramas terapéuticas y recorridos de interfaz. No es validación clínica ni de ficha técnica.
