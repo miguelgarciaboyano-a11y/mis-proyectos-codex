@@ -7,8 +7,8 @@ Fecha: 2026-10-16. Entorno: Node 24.19.0, npm 11.9.0, Python 3.12.14, Chromium d
 | Comprobación | Resultado |
 |---|---|
 | `npm ci --ignore-scripts --no-audit --no-fund --cache /tmp/consulta-npm-cache` | Instalación reproducida desde lockfile, 4 paquetes de desarrollo |
-| `npm run check` | Sintaxis correcta de los 8 módulos JavaScript |
-| `npm test` | **42 pruebas aprobadas**, 0 fallidas, 0 omitidas |
+| `npm run check` | Sintaxis correcta de los 11 módulos JavaScript |
+| `npm test` | **60 pruebas aprobadas**, 0 fallidas, 0 omitidas |
 | `npm start` y petición HTTP local | Servidor estático iniciado, HTTP 200 y aplicación cargada en Chromium |
 | `npm run test:browser` | Recorrido integral completado; sin errores JavaScript ni solicitudes externas |
 | axe WCAG 2 A/AA y 2.1 AA | 0 infracciones detectadas en pantalla inicial y seguimiento con secciones abiertas; no equivale a auditoría manual completa |
@@ -38,10 +38,12 @@ Es una verificación técnica del prototipo, no una validación clínica ni una 
 
 La configuración reutilizable de nube contiene `install_script` y `start_skill` guardados como borrador. Guardar ese borrador no ejecuta ni publica la configuración. La instancia actual se ha probado; no se afirma haber verificado restauración en una tarea nueva ni publicación del entorno.
 
-## Ampliación Fiebre
+## Fiebre: verificación de la versión vigente
 
-Se ejecutó `node --test --test-isolation=none tests/*.test.js`: **52 pruebas aprobadas**, 0 fallidas y 0 omitidas (42 previas y 10 de fiebre). La ejecución sin aislamiento permite ver las pruebas individuales en el entorno actual. Sintaxis comprobada de los 10 módulos.
+`node --test --test-isolation=none tests/*.test.js`: **60 pruebas aprobadas**, 0 fallidas, 0 omitidas (42 de TDAH/antropometría y 18 de Fiebre). `npm run check` verifica 11 módulos. Los tests de Fiebre cubren redacción narrativa, omisión de datos ausentes, singular/plural y edad, diez síntomas, detalles digestivos y dolor, contactos, plantilla normal por defecto y FANT por edad.
 
-Se volvió a ejecutar el recorrido Chromium de TDAH y se ejecutó `tests/fever-browser.cjs`: diez síntomas y detalles específicos, negativos pendientes/revisados, contactos, sustitución de frases de exploración sin contradicción, FANT <12 meses, avisos por edad/persistencia, confirmación de consejos, conservación de edición manual, copia real, conservación independiente de ambas consultas y reinicio de fiebre. Axe no detectó infracciones en la pestaña Fiebre; sin desbordamiento horizontal a 1024, 768 y 390 px. Sin errores JavaScript. Los ensayos usaron datos ficticios.
+El cuadro único se prueba con prefijos y términos habituales, varios sistemas por frase, separadores, abreviaturas/decimales, retirada de frases normales incompatibles, incorporación de hallazgos adicionales, conservación de anomalías de fontanela y retirada conservadora de la normalidad ante texto no asignable. No se afirma comprensión clínica general del texto libre.
 
-No implica validación clínica del módulo Fiebre ni garantía jurídica. La exploración normal y el registro de consejos explicados son afirmaciones confirmadas por el profesional, no hallazgos inferidos por el software.
+Chromium: recorridos completos TDAH y Fiebre, generación de nota sin casillas, un único campo de alteraciones, aplicación de sustituciones, aviso ante texto ambiguo, conservación de ediciones y consultas al navegar, cancelación de regeneración sin pérdida, copiado real, reinicio y avisos clínicos. Se comprueba que los diez síntomas iniciales están dentro de pantalla sin desplazamiento a 1440, 1024, 768 y 390 px de ancho con 900 px de alto, y que no hay desbordamiento horizontal. Valores positivos abren campos adicionales y pueden aumentar la altura.
+
+Axe WCAG 2 A/AA y 2.1 AA no detectó infracciones en Fiebre; sin errores JavaScript y sin almacenamiento persistente. Captura local: `test-results/fever-compact.png` (ignorada por Git). Todos los datos de prueba son ficticios. Esta evidencia técnica no valida clínicamente la plantilla ni garantiza la corrección de cualquier frase introducida; requiere revisión profesional de la nota.
