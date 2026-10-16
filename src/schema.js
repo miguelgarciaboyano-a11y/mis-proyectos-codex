@@ -1,3 +1,4 @@
+import {newFirstVisit} from './first-visit.js';
 // Campos de entrevista: las reglas clínicas se mantienen en clinical.js.
 export const STATES = [['','No valorado'],['no','No'],['si','Sí'],['desconocido','Desconocido']];
 export const symptoms = [
@@ -75,7 +76,7 @@ export const followFields = [
  ['comorbidityReview','Revisión de comorbilidades, contexto y alternativas antes de ajustar','textarea']
 ];
 export function newState(){return {
- mode:'first', date:new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Madrid'}), birth:'',sex:'',
+ mode:'first', firstVisit:newFirstVisit(), date:new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Madrid'}), birth:'',sex:'',
  interview:{}, symptoms:{}, symptomExamples:'', differential:{}, differentialDetails:'',selfHarm:'', cv:{},cvDetails:'',
  goals:[],measurements:[],measurement:{date:'',weight:'',height:'',sbp:'',dbp:'',hr:'',position:'',oedema:''},
  drug:{},follow:{},ramReviewed:false,ram:Object.fromEntries(adverseEffects.map(([id])=>[id,{present:false,intensity:'',onset:'',impact:'',notes:''}])),

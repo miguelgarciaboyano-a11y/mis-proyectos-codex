@@ -1,3 +1,4 @@
+import {firstVisitSummary} from './first-visit.js';
 import {symptoms,differentials,cvFields,adverseEffects,interviewGroups,drugFields,followFields} from './schema.js';
 import {measurementText,measurementWarnings,numeric} from './measurements.js';
 import {ageDays} from './percentiles.js';
@@ -74,6 +75,7 @@ export function ramText(s){
  if(s.otherRam)lines.push('Otras RAM: '+s.otherRam);return lines.join('\n');
 }
 export function noteSummary(s){
+ if(s.mode==='first'&&s.firstVisit)return firstVisitSummary(s);
  const i=s.interview,history=[],background=[],exam=[],tests=[],plan=[],pending=[];
  const add=(target,text,priority=50)=>{if(text)target.push({text,priority});};
  if(s.date)add(history,'Fecha: '+s.date,100);

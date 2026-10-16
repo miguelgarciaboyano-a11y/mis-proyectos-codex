@@ -27,3 +27,13 @@
 @media(max-width:650px){.fever-symptom-grid{grid-template-columns:1fr}.fever-symptom-row{grid-template-columns:minmax(0,1fr)62px 70px}.fever-workspace .lead{font-size:11px}.fever-workspace .page-heading h1{font-size:26px}.fever-workspace .section-body{padding:11px}}
 
 @media(max-width:650px){.fever-symptom-grid{gap:3px}.fever-symptom{padding:2px 6px}.fever-symptom-row{min-height:28px}.fever-symptom input,.fever-symptom select{min-height:28px;padding:3px}}
+/* Primera valoración: checklist de proceso, sin puntuación clínica. */
+.first-workspace h1{font-size:30px}.first-meta{background:white;border:1px solid var(--line);border-radius:7px;padding:15px;margin-bottom:10px}
+.first-source{font-size:9px;letter-spacing:.7px;color:#506d5a;margin:0 0 12px}
+.first-checklist{display:grid;gap:10px;margin-bottom:17px}.first-check{display:flex;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6;color:#304d3d;cursor:pointer}
+.first-check input{margin-top:3px}.first-answers{display:grid;gap:12px}.first-answers .field{margin:0}.first-answers textarea{min-height:66px}
+.first-progress{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;font-size:10px;color:#526b5c;flex-wrap:wrap}
+.first-block .section{margin-top:15px;background:#fbfcf8}.first-block .section summary small{font-size:10px}
+#first-schoolRequest{min-height:220px;line-height:1.7}.first-workspace .note-panel p{line-height:1.6}
+@media(max-width:1100px){.first-workspace .consultation-grid{grid-template-columns:1fr}.first-workspace .note-panel{position:static}}
+@media(max-width:650px){.first-workspace h1{font-size:25px}.first-progress>span{width:100%}.first-check{font-size:12px}}
