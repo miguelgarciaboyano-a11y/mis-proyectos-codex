@@ -39,4 +39,4 @@ No se añaden criterios diagnósticos, umbrales de escalas ni circuitos locales.
 
 ### Otalgia
 
-Reglas clínicas facilitadas por el usuario el 16/10/2026, implementadas como propuestas revisables. No contrastadas con una guía externa vigente. Límites, excepciones y diferencias de automatización: [OTALGIA.md](OTALGIA.md).
+Capítulo 130 «Otitis media aguda y otitis externa. Complicaciones», M. García Boyano y F. Baquero Artigao, pp. 1591–1596, imágenes aportadas por el usuario (edición completa no especificada). Sustituye las indicaciones textuales iniciales donde difieren. Concentraciones de amoxicilina 50 mg/mL y combinación 100 mg/mL indicadas por el usuario. Reglas, límites y decisiones de implementación: [OTALGIA.md](OTALGIA.md).

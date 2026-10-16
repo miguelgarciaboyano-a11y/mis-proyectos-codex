@@ -61,3 +61,7 @@ Datos ficticios. Esta evidencia técnica no valida diagnóstico, triaje, protoco
 ## Otalgia · 16/10/2026
 
 Añadidas 12 pruebas unitarias (82 en total) y una prueba Chromium de la tercera página. Incluyen umbrales de edad y dosis, ausencia de inferencias, alergias, riesgos, oído derecho/izquierdo, adopción explícita e invalidación. Sintaxis de 15 módulos. Alcance clínico documentado en OTALGIA.md. Todas las pruebas unitarias y los cuatro recorridos de navegador superados.
+
+## Revisión de Otalgia con capítulo 130 · 16/10/2026
+
+Las 18 pruebas de Otalgia sustituyen sus 12 anteriores: 88 pruebas unitarias totales. Nuevos casos: formulaciones 50/100 mg/mL, máximo 3 g/día, redondeo, criterios de probable/confirmada, recurrencia con episodio reciente, 48 horas previas cumplidas, generación directa y alergia positiva opcional. El recorrido de Otalgia comprueba la retirada de los campos y pasos solicitados, cálculo actualizado y límites. Véase OTALGIA.md para diferencias respecto de la primera versión.
