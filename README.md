@@ -110,3 +110,7 @@ Las 36 casillas marcan únicamente qué se ha abordado. No generan hallazgos cl�
 La solicitud escolar contiene seis líneas editables y se copia al portapapeles; no se envía al centro. La autorización familiar no se da por supuesta. Los anexos opcionales de Vanderbilt, constantes y objetivos se conservan en los bloques 4, 9 y 12. La consulta sucesiva y Fiebre mantienen sus recorridos.
 
 La nota final sintetiza únicamente lo escrito o seleccionado, sin cerrar el diagnóstico y conservando el formato de ocho apartados y máximo de 180 palabras. Los datos de la primera consulta se conservan al cambiar de recorrido o apartado; no se incorporan como nuevos hechos al seguimiento de forma implícita. No se validó la duración real de la entrevista ni el uso clínico.
+
+## Otalgia
+
+Tercera página con anamnesis compacta, exploración independiente de cada oído, orientación y opciones terapéuticas revisables. Las propuestas solo se incorporan mediante selección expresa. Véanse alcance, excepciones y validación técnica en [OTALGIA.md](docs/OTALGIA.md).
