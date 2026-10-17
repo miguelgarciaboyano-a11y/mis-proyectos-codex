@@ -1,4 +1,4 @@
-import {createOtalgiaUI} from './otalgia-app.js?v=20261017-otalgia-12';
+import {createOtalgiaUI} from './otalgia-app.js?v=20261017-otalgia-13';
 const root=document.getElementById('app');
 root.dataset.module='otalgia';
 const consultation=createOtalgiaUI(root,{standalone:true});
