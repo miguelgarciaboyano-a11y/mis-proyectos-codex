@@ -95,3 +95,7 @@ Nueva prueba de navegador: acceso directo a otitis.html, un único apartado sin 
 
 ### Retirada de cartilla y motivo de Otalgia
 Se retira el módulo vacunal y su OCR. La nota solo abre con otalgia cuando «Otalgia referida» es sí; en otro caso utiliza los síntomas presentes y no inventa molestias óticas. Sin síntomas no se fabrica un motivo. 105 pruebas unitarias y los cinco recorridos de navegador superados; comprobación adicional de fiebre sin dolor referido y ausencia de enlace vacunal superada.
+
+### Otitis: menores de dos años y tratamiento sin peso
+107 pruebas unitarias superadas. Casos nuevos: llanto con/sin valoración explícita como equivalente, rechazo aislado, autogolpes y exclusión a partir de 2 años; fármaco conservado sin peso en amoxicilina, combinación, alternativas por alergia y ceftriaxona, sin volumen ni dosis inventados. El bloque infantil se muestra desde que la edad en años es <2 aunque falten los meses; los meses exactos siguen siendo necesarios para elegir tratamiento por edad.
+Los cinco recorridos de navegador se completaron correctamente tras reiniciar el servidor local, que había dejado de responder. Se verifica en ambas páginas visibilidad a los 1 años sin meses, y en la independiente el diagnóstico con equivalente clínico marcado y el antibiótico sin peso; permanecen accesibilidad, copia y anchuras móviles.
