@@ -1,17 +1,17 @@
 import {clinicalText,wordCount,NOTE_LIMIT} from './note-summary.js';
 export const OTALGIA_SIGNS=[['discharge','Otorrea'],['fever','Fiebre'],['cold','Síntomas catarrales'],['antibiotic','Antibiótico en los últimos 7 días'],['pool','Acude a piscina']];
-export const INFANT_SIGNS=[['irritable','Irritabilidad'],['feeding','Rechazo de tomas'],['sleep','Sueño interrumpido'],['head','Autogolpes sobre el cráneo'],['crying','Llanto de predominio nocturno'],['earTouch','Manipulación del oído']];
+export const INFANT_SIGNS=[['irritable','Irritabilidad'],['feeding','Rechazo de tomas'],['sleep','Sueño interrumpido'],['head','Autogolpes sobre el cráneo'],['crying','Llanto injustificado de inicio brusco, especialmente nocturno'],['earTouch','Manipulación del oído']];
 export const EAR_SIGNS=[['tragus','Trago positivo'],['canal','CAE eritematoso'],['edema','CAE edematoso'],['severeEdema','CAE con edema importante'],['discharge','Otorrea'],['red','Tímpano hiperémico no abombado'],['bulging','Tímpano hiperémico y abombado']];
-export const RISKS=[['severe','Otalgia muy intensa'],['family','Familiares de primer grado con secuelas óticas por OMA'],['hearing','Hipoacusia previa'],['craniofacial','Anomalía craneofacial'],['recurrent','OMA recurrente (≥3 episodios/6 meses o ≥4/12 meses)'],['persistent','OMA persistente (≤7 días tras finalizar tratamiento)'],['failure','Sin mejoría tras 48–72 h de antibiótico'],['intolerance','Intolerancia que impide la vía oral'],['immune','Inmunosupresión'],['implant','Implante coclear'],['recentImplant','Implante en primeros 3–6 meses o con malformación/fístula'],['tubes','Tubos de timpanostomía'],['conjunctivitis','Conjuntivitis purulenta'],['amoxi30','Amoxicilina en el último mes'],['allergy','Alergia a amoxicilina/penicilinas']];
+export const RISKS=[['severe','Otalgia muy intensa o consulta nocturna a Urgencias por dolor'],['family','Familiares de primer grado con secuelas óticas por OMA'],['hearing','Hipoacusia previa'],['craniofacial','Anomalía craneofacial'],['recurrent','OMA recurrente (≥3 episodios/6 meses o ≥4/12 meses)'],['persistent','OMA persistente (≤7 días tras finalizar tratamiento)'],['failure','Sin mejoría tras 48–72 h de antibiótico'],['intolerance','Intolerancia que impide la vía oral'],['immune','Inmunosupresión'],['implant','Implante coclear'],['recentImplant','Implante en primeros 3–6 meses o con malformación/fístula'],['tubes','Tubos de timpanostomía'],['conjunctivitis','Conjuntivitis purulenta'],['amoxi30','Amoxicilina en el último mes'],['allergy','Alergia a amoxicilina/penicilinas']];
 export const PRIOR_ANTIBIOTICS=[['','No especificado'],['amoxicillin','Amoxicilina'],['amoxiclav','Amoxicilina-clavulánico'],['cefuroxime','Cefuroxima-axetilo'],['clarithromycin','Claritromicina'],['azithromycin','Azitromicina'],['ceftriaxone','Ceftriaxona'],['other','Otro antibiótico']];
 export function previousAntibiotic(s){if(!s.priorAntibiotic)return '';return s.priorAntibiotic==='other'?s.antibioticName:PRIOR_ANTIBIOTICS.find(([key])=>key===s.priorAntibiotic)?.[1]||'';}
 const ear=()=>({status:'',tragus:false,canal:false,edema:false,severeEdema:false,discharge:false,red:false,bulging:false});
-export function newOtalgia(){return {years:'',months:'',weight:'',side:'',pain:'',painEquivalent:false,days:'',temperature:'',feverDays:'',coldDays:'',priorAntibiotic:'',antibioticName:'',antibioticDose:'',episodes12:'',episodes6:'',immuneSeverity:'',analgesia48:false,allergyMild:false,allergySevere:false,signs:Object.fromEntries([...OTALGIA_SIGNS,...INFANT_SIGNS].map(([k])=>[k,false])),risks:Object.fromEntries(RISKS.map(([k])=>[k,false])),right:ear(),left:ear()};}
+export function newOtalgia(){return {years:'',months:'',weight:'',side:'',pain:'',days:'',temperature:'',feverDays:'',coldDays:'',priorAntibiotic:'',antibioticName:'',antibioticDose:'',episodes12:'',episodes6:'',immuneSeverity:'',analgesia48:false,allergyMild:false,allergySevere:false,signs:Object.fromEntries([...OTALGIA_SIGNS,...INFANT_SIGNS].map(([k])=>[k,false])),risks:Object.fromEntries(RISKS.map(([k])=>[k,false])),right:ear(),left:ear()};}
 const numeric=x=>x!==''&&Number.isFinite(Number(x))&&Number(x)>=0?Number(x):null;
 const positive=x=>numeric(x)!==null&&Number(x)>0;
 export function ageMonths(s){const y=numeric(s.years);if(y===null)return null;if(y<2){const m=numeric(s.months);return Number.isInteger(m)&&m<24&&Math.floor(m/12)===Math.floor(y)?m:null;}return y*12;}
 export function underTwo(s){const years=numeric(s.years);return years!==null&&years<2;}
-export function hasPainEquivalent(s){return underTwo(s)&&s.painEquivalent&&['irritable','sleep','head','crying','earTouch'].some(id=>s.signs[id]);}
+export function hasPainEquivalent(s){return underTwo(s)&&['irritable','feeding','sleep','head','crying','earTouch'].some(id=>s.signs[id]);}
 export function recurrentOtitis(s){return !!s.risks.recurrent;}
 function earEvidence(s,k){const e=s[k].status==='unseen'?{...s[k],red:false,bulging:false}:s[k],age=ageMonths(s),lateral=s.side==='bilateral'||s.side===k;
  const pain=lateral&&(s.pain==='si'||hasPainEquivalent(s));
@@ -20,14 +20,15 @@ function earEvidence(s,k){const e=s[k].status==='unseen'?{...s[k],red:false,bulg
  const external=(e.canal&&(e.edema||e.severeEdema||e.tragus))||(e.severeEdema&&pain);
  if(external&&e.bulging)return {kind:'mixed'};
  if(external)return {kind:'oe'};
- // Abombado e hiperémico recoge inflamación y derrame; otalgia completa los tres criterios.
+ // Criterios aportados: otalgia/equivalente, otorrea y tímpano abombado-inflamado.
  if((pain&&e.bulging)||e.discharge||(lateral&&s.signs.discharge))return {kind:'oma'};
- const effusion=e.bulging||e.discharge||(lateral&&s.signs.discharge);
- if((pain&&e.red)||(effusion&&(pain||s.signs.cold||s.signs.fever||e.red))||(e.status==='unseen'&&pain&&(s.signs.cold||s.signs.fever))){
-  const upgrade=s.signs.cold&&((age!==null&&age<6)||recurrentOtitis(s)||s.risks.family);
+ const associated=s.signs.cold||s.signs.fever;
+ const painWithoutOtoscopy=lateral&&(underTwo(s)?s.signs.crying:s.pain==='si');
+ if((e.bulging&&!pain&&associated)||(e.status==='unseen'&&painWithoutOtoscopy&&associated)){
+  const upgrade=(age!==null&&age<6)||recurrentOtitis(s)||s.risks.family;
   return {kind:upgrade?'omaRisk':'probable'};
  }
- return {kind:effusion?'probable':'none'};
+ return {kind:'none'};
 }
 const fmt=n=>Number(n.toFixed(2)).toLocaleString('es-ES',{maximumFractionDigits:2,useGrouping:false});
 export function oralDose(weight,clav=false){if(!positive(weight))return null;const daily=Math.min(Number(weight)*80,3000),concentration=clav?100:50,ml=Math.round(daily/3/concentration*100)/100;

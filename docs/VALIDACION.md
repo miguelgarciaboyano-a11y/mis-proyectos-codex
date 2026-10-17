@@ -99,3 +99,7 @@ Se retira el módulo vacunal y su OCR. La nota solo abre con otalgia cuando «Ot
 ### Otitis: menores de dos años y tratamiento sin peso
 107 pruebas unitarias superadas. Casos nuevos: llanto con/sin valoración explícita como equivalente, rechazo aislado, autogolpes y exclusión a partir de 2 años; fármaco conservado sin peso en amoxicilina, combinación, alternativas por alergia y ceftriaxona, sin volumen ni dosis inventados. El bloque infantil se muestra desde que la edad en años es <2 aunque falten los meses; los meses exactos siguen siendo necesarios para elegir tratamiento por edad.
 Los cinco recorridos de navegador se completaron correctamente tras reiniciar el servidor local, que había dejado de responder. Se verifica en ambas páginas visibilidad a los 1 años sin meses, y en la independiente el diagnóstico con equivalente clínico marcado y el antibiótico sin peso; permanecen accesibilidad, copia y anchuras móviles.
+
+### Esquema diagnóstico actualizado
+108 pruebas unitarias superadas. Se comprueba cada equivalente de otalgia, fiebre o catarro en OMA probable, promoción por edad/recurrencia/antecedente familiar, exclusión de persistencia como promotor, llanto brusco en lactantes sin otoscopia y bilateralidad con criterios por ambos oídos. La hiperemia sin abombamiento no diagnostica OMA.
+Ambos recorridos de Otalgia y Otitis independiente superados en navegador, con notas, cálculos, accesibilidad y vistas móviles.
